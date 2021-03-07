@@ -4,6 +4,7 @@ from grid import Grid
 from fluid2d import Fluid2d
 import numpy as np
 import matplotlib.pyplot as plt
+from droplet_operator import gradient, normalise, torque, source_1d
 
 param = Param('default.xml')
 param.modelname = 'boussinesq'
@@ -38,7 +39,7 @@ param.freq_his = .25
 param.freq_diag = .1
 
 # plot
-param.plot_interactive = True
+param.plot_interactive = False
 param.plot_var = 'buoyancy'
 param.cax = [-8., 8.]
 param.colorscheme = 'imposed'
@@ -71,7 +72,7 @@ S = 20.  # vertical shear
 
 
 def set_buoyancy(param, grid, x0, y0, sigma,
-           density_type, ratio=1, sharpness = 100):
+           density_type, ratio=1, sharpness = 200):
     
 
     xr, yr = grid.xr, grid.yr
@@ -98,69 +99,19 @@ def set_buoyancy(param, grid, x0, y0, sigma,
 
     return y
 
-
-
-# linear stratification
+# Creating a disc of buoyancy: 
 buoy[:, :] = 0.
 dtype = 'smooth_step'
-sigma = 0.3*param.Lx
+sigma = 0.2*param.Lx
 
 buoy[:] += set_buoyancy(param, grid, 0.5, 0.5, sigma,
-                dtype, ratio=1, sharpness = 400)*-2
-
-
+                dtype, ratio=1, sharpness = 50)*-2
 
 def get_phi(buoy):
     phi =  np.amax(buoy)-buoy
     return phi/(np.amax(phi)-np.amin(phi))
 
-def gradient(phi):
-    """Compute the gradient of phi with differents approches: in directions i,
-    j and along the diagonals.
-    The returned gradient is averaged between the two methods.
-    A second averaging is done with adjacent cells."""
-    
-    def average(n, weight = 0.15):
-        sqrt2 = np.sqrt(2)
-        """return the weighted average with adjacent cells."""        
-        n[1:-1, 1:-1] = (n[2:,2:]/sqrt2 + n[2:,1:-1] + n[2:,:-2]/sqrt2 +
-                        n[:-2,:-2]/sqrt2 + n[:-2, 1:-1] + n[:-2,2:]/sqrt2 +
-                        n[1:-1,:-2] + n[1:-1, 2:])*(1-weight)/8 + n[1:-1, 1:-1]*weight
-        return n
-
-    # Creating gradients arrays:
-    grad_i = phi*0
-    grad_j = phi*0
-    grad_di = phi*0
-    grad_dj = phi*0
-    
-    # Computing the gradient in direction i(vertical) and j(horizontal):
-    grad_i[1:-1,1:-1] = phi[2:,1:-1]-phi[:-2,1:-1]
-    grad_j[1:-1,1:-1] = phi[1:-1,2:]-phi[1:-1,:-2]
-
-    # Diagonal gradients:
-    sqrt2 = np.sqrt(2)
-    grad_dj[1:-1,1:-1] = (phi[:-2,2:]-phi[2:,:-2])/sqrt2
-    grad_di[1:-1,1:-1] = (phi[2:,2:]-phi[:-2,:-2])/sqrt2    
-    
-    # Projecting diagonal gradients, onto the i and i directions,
-    # adding to i and j gradients and averaging:
-    grad_j[1:-1,1:-1] = (grad_j[1:-1,1:-1]+(
-        grad_dj[1:-1,1:-1]+grad_di[1:-1,1:-1])/sqrt2)/2 
-    
-    grad_i[1:-1,1:-1] = (grad_i[1:-1,1:-1]+(
-        -grad_dj[1:-1,1:-1]+grad_di[1:-1,1:-1])/sqrt2)/2
-    
-    # Averaging with adjacent cells:
-    grad_i = average(grad_i)
-    grad_j = average(grad_j)
-    return -grad_i, -grad_j
-
-
-def normal(v_i, v_j):
-    norm = np.sqrt(v_i**2+v_j**2)
-    norm[norm == 0] = 1
-    return v_i/norm, v_j/norm
+phi = get_phi(buoy)
 
 model.bref[:] = buoy
 
@@ -168,24 +119,38 @@ print('Ri = %4.2f' % (N**2/S**2))
 
 vor[:, :] = 0.
 
-
-grad_i, grad_j = gradient(get_phi(buoy))
-n_i, n_j = normal( *gradient(get_phi(buoy)))
+dx = param.Ly/param.ny
+grad_i, grad_j = gradient(phi, dx)
+n_i, n_j = normalise( grad_i, grad_j)
 grad = np.sqrt(grad_i**2 + grad_j**2)
 
-# In order to check the look the initial conditions.
-plt.figure(figsize = (10,10))
+# =============================================================================
+# In order to check the look of the initial conditions.
+# =============================================================================
 
-#plt.pcolormesh(grid.xr, grid.yr, get_phi(buoy), shading = 'nearest')
-plt.pcolormesh(grid.xr, grid.yr, grad**4, shading = 'nearest')
+plt.figure(figsize = (8,8))
 
-n_i[grad<0.6] = 0
-n_j[grad<0.6] = 0
-#plt.quiver(grid.xr, grid.yr, n_j, n_i, scale = 10, minlength = 0)
+# Check phi:
+#plt.pcolormesh(grid.xr, grid.yr, phi, shading = 'nearest')
+
+#Check the torque:
+plt.pcolormesh(grid.xr, grid.yr, torque(phi, dx, rho_l = 1, rho_h = 5, xi = 3*dx, sigma = 5), shading = 'nearest')
+
+# Check the source term in equation (1d) :
+#plt.pcolormesh(grid.xr, grid.yr, source_1d(phi, dx, xi = 3*dx, M = 0.01), shading = 'nearest')
+
+
+#Check the gradient:
+#grad_i[grad<30] = 0
+#grad_j[grad<30] = 0
+#plt.quiver(grid.xr, grid.yr, -grad_j, -grad_i, scale = 500, minlength = 0)
 
 plt.yticks([])
 plt.xticks([])
+plt.tight_layout()
 plt.show()
+
+
 #model.set_psi_from_vorticity()
 
 #f2d.loop()

@@ -4,7 +4,7 @@ from gmg.hierarchy import Gmg
 import fortran_advection as fa
 import fortran_operators as fo
 import fortran_diag as fd
-
+import droplet_operator as drplt
 
 class Operators(Param):
 
@@ -325,6 +325,21 @@ class Operators(Param):
         self.fill_halo(y)
         dxdt[iw][:, :] = y
 
+    def rhs_droplet(self, x, t, dxdt, rho_l, rho_h, xi, sigma, M):    
+        """ rho_l = low density, rho_h = high density"""
+        
+        i_phi = self.varname_list.index('phi')
+        i_w = self.varname_list.index('vorticity')
+        
+        
+        phi = x[i_phi]
+        source = drplt.source_1d(phi, self.dx, xi, M)
+        torque = drplt.torque(phi, self.dx, rho_l, rho_h, xi, sigma)
+
+        #!!!self.fill_halo(y)
+        dxdt[i_w][:, :] += torque   
+        dxdt[i_phi][:, :] += source
+    
     def diffx(self, x):
         nh = self.nh
         if self.i0 == self.npx-1:
