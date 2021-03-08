@@ -93,7 +93,11 @@ class Fluid2d(object):
             self.enstrophyname = 'pv2'
         else:
             self.enstrophyname = 'enstrophy'
-
+        
+        if param.modelname == 'droplet':
+            from droplet import Droplet
+            self.model = Droplet(param, grid)
+        
         if self.isisland:
             grid.island.finalize(self.model.ope.mskp)
             self.model.ope.rhsp = grid.island.rhsp

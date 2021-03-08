@@ -90,7 +90,7 @@ class Droplet(object):
 
         # 1/ integrate advection
         self.tscheme.forward(self.var.state, t, dt)
-        self.set_density()
+
         
         # 2/ integrate source
         if self.noslip:

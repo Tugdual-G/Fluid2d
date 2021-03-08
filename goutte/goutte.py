@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from droplet_operator import gradient, normalise, torque, source_1d
 
 param = Param('default.xml')
-param.modelname = 'boussinesq'
+param.modelname = 'droplet'
 param.expname = 'khi_0'
 
 # domain and resolution
@@ -21,7 +21,7 @@ param.npy = 1
 param.geometry = 'xchannel'
 
 # time
-param.tend = 2.
+param.tend = 0.1
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.01
@@ -32,7 +32,7 @@ param.order = 5
 param.timestepping = 'RK3_SSP'
 
 # output
-param.var_to_save = ['vorticity', 'psi', 'u', 'v', 'buoyancy', 'banom']
+param.var_to_save = ['vorticity', 'psi', 'u', 'v', 'phi']
 param.list_diag = 'all'
 param.freq_plot = 5
 param.freq_his = .25
@@ -40,7 +40,7 @@ param.freq_diag = .1
 
 # plot
 param.plot_interactive = False
-param.plot_var = 'buoyancy'
+param.plot_var = 'phi'
 param.cax = [-8., 8.]
 param.colorscheme = 'imposed'
 param.generate_mp4 = True
@@ -64,7 +64,7 @@ model = f2d.model
 
 xr, yr = grid.xr, grid.yr
 vor = model.var.get('vorticity')
-buoy = model.var.get('buoyancy')
+buoy = model.var.get('phi')
 
 # control parameters of the experiment
 N = 4.  # Brunt Vaisala frequency squared
@@ -113,7 +113,7 @@ def get_phi(buoy):
 
 phi = get_phi(buoy)
 
-model.bref[:] = buoy
+
 
 print('Ri = %4.2f' % (N**2/S**2))
 
@@ -151,7 +151,7 @@ plt.tight_layout()
 plt.show()
 
 
-#model.set_psi_from_vorticity()
+model.set_psi_from_vorticity()
 
-#f2d.loop()
+f2d.loop()
 

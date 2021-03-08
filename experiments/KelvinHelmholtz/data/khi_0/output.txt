@@ -1,48 +1,0 @@
---------------------------------------------------
- Multigrid hierarchy
---------------------------------------------------
-Level  0:   256x  128 / Procs  1x 1  / ix,iy=1,1 / dx=0.008 / Flag= finest
-Level  1:   128x   64 / Procs  1x 1  / ix,iy=1,1 / dx=0.016 / Flag= regular
-Level  2:    64x   32 / Procs  1x 1  / ix,iy=1,1 / dx=0.031 / Flag= regular
-Level  3:    32x   16 / Procs  1x 1  / ix,iy=1,1 / dx=0.062 / Flag= regular
-Level  4:    16x    8 / Procs  1x 1  / ix,iy=1,1 / dx=0.125 / Flag= regular
-Level  5:     8x    4 / Procs  1x 1  / ix,iy=1,1 / dx=0.250 / Flag= coarsest
-Multigrid relaxation: default
-  => use the nine points stencil
---------------------------------------------------
- Fluid2d summary:
---------------------------------------------------
-  - model equations: boussinesq
-  - grid size: 256 x 128
-  - integration time: 5.00
-  - advection schemes applied to:
-    - vorticity
-    - buoyancy
-Ri = 0.04
---------------------------------------------------
- Convergence of the vorticity inversion
-    the residual should decrease by several orders
-    of magnitude otherwise something is wrong
---------------------------------------------------
- ite = 1 / res = 3.22e-02 / conv =  31.0584
- ite = 2 / res = 9.58e-04 / conv =  33.6188
- ite = 3 / res = 2.29e-05 / conv =  41.7776
- ite = 4 / res = 5.72e-07 / conv =  40.0734
---------------------------------------------------
- Starting the time loop
---------------------------------------------------
- / diag: 1    - his: 1    / diag: 3    - his: 1   kt=20   / t=0.210    / dt=0.011    / diag: 5    - his: 2   kt=40   / t=0.407    / dt=0.010    / diag: 7    - his: 3   kt=60   / t=0.606    / dt=0.010    / diag: 9    - his: 4   kt=80   / t=0.806    / dt=0.010    / diag: 11   - his: 5   kt=100  / t=1.000    / dt=0.008    / diag: 12   - his: 5   kt=120  / t=1.183    / dt=0.010    / diag: 14   - his: 6   kt=140  / t=1.367    / dt=0.009    / diag: 16   - his: 7   kt=160  / t=1.538    / dt=0.008    / diag: 18   - his: 7   kt=180  / t=1.702    / dt=0.008    / diag: 19   - his: 8   kt=200  / t=1.851    / dt=0.007    / diag: 20   - his: 8   kt=220  / t=1.994    / dt=0.007    / diag: 22   - his: 9   kt=240  / t=2.116    / dt=0.006    / diag: 23   - his: 9   kt=260  / t=2.234    / dt=0.006    / diag: 24   - his: 10  kt=280  / t=2.338    / dt=0.005    / diag: 25   - his: 10  kt=300  / t=2.447    / dt=0.006    / diag: 26   - his: 11  kt=320  / t=2.548    / dt=0.005    / diag: 27   - his: 11  kt=340  / t=2.653    / dt=0.005    / diag: 28   - his: 12  kt=360  / t=2.760    / dt=0.005    / diag: 29   - his: 12  kt=380  / t=2.860    / dt=0.005    / diag: 30   - his: 12  kt=400  / t=2.966    / dt=0.005    / diag: 31   - his: 13  kt=420  / t=3.060    / dt=0.005    / diag: 32   - his: 13  kt=440  / t=3.159    / dt=0.005    / diag: 33   - his: 14  kt=460  / t=3.259    / dt=0.004    / diag: 34   - his: 14  kt=480  / t=3.354    / dt=0.005    / diag: 35   - his: 14  kt=500  / t=3.456    / dt=0.005    / diag: 36   - his: 15  kt=520  / t=3.549    / dt=0.005    / diag: 37   - his: 15  kt=540  / t=3.646    / dt=0.005    / diag: 38   - his: 15  kt=560  / t=3.746    / dt=0.005    / diag: 39   - his: 16  kt=580  / t=3.834    / dt=0.005    / diag: 40   - his: 16  kt=600  / t=3.925    / dt=0.005    / diag: 41   - his: 17  kt=620  / t=4.011    / dt=0.004    / diag: 41   - his: 17  kt=640  / t=4.092    / dt=0.004    / diag: 42   - his: 17  kt=660  / t=4.178    / dt=0.004    / diag: 43   - his: 18  kt=680  / t=4.266    / dt=0.004    / diag: 44   - his: 18  kt=700  / t=4.352    / dt=0.004    / diag: 45   - his: 18  kt=720  / t=4.443    / dt=0.005    / diag: 46   - his: 19  kt=740  / t=4.527    / dt=0.004    / diag: 47   - his: 19  kt=760  / t=4.614    / dt=0.005    / diag: 48   - his: 19  kt=780  / t=4.708    / dt=0.005    / diag: 48   - his: 20  kt=800  / t=4.787    / dt=0.004    / diag: 49   - his: 20  kt=820  / t=4.865    / dt=0.004    / diag: 50   - his: 20  kt=840  / t=4.946    / dt=0.004   kt=854  / t=5.000    / dt=0.003   
-done
- Output files:
---------------------------------------------------
-  - data/khi_0/khi_0_his.nc
-  - data/khi_0/khi_0_diag.nc
-  - data/khi_0/khi_0_temperature.mp4
-  - data/khi_0/khi_0.py
---------------------------------------------------
- You may recover all the experiment parameters by doing
- ncdump -h data/khi_0/khi_0_his.nc
-
- or browse the history file by doing
- ncview data/khi_0/khi_0_his.nc
---------------------------------------------------
