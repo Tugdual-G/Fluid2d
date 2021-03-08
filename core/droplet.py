@@ -106,9 +106,8 @@ class Droplet(object):
         self.ope.rhs_adv(x, t, dxdt)
 
         # db/dx is a source term for the vorticity
-        self.ope.rhs_droplet(x, t, dxdt, rho_l = 1, rho_h = 5, xi = 3*self.dx, sigma = 5, M = 0.01)
-        
-      
+        self.ope.rhs_droplet(x, t, dxdt, rho_l = 1, rho_h = 2, xi = 5*self.dx, sigma = 5, M = 0.1)
+              
         self.ope.invert_vorticity(dxdt, flag='fast')
 
     def add_noslip(self, x):

@@ -25,14 +25,14 @@ def gradient(phi, dx):
     # Creating gradients arrays:
     grad_i = np.zeros_like(phi, dtype = np.float32)
     grad_j = np.zeros_like(phi, dtype = np.float32)
-    """grad_di = np.zeros_like(phi)
-    grad_dj = np.zeros_like(phi)"""
+    grad_di = np.zeros_like(phi)
+    grad_dj = np.zeros_like(phi)
     
     # Computing the gradient in direction i(vertical) and j(horizontal):
     grad_i[1:-1,1:-1] = (phi[2:,1:-1]-phi[:-2,1:-1])/(2*dx)
     grad_j[1:-1,1:-1] = (phi[1:-1,2:]-phi[1:-1,:-2])/(2*dx)
 
-    """# Diagonal gradients:
+    # Diagonal gradients:
     sqrt2 = np.sqrt(2)
     grad_dj[1:-1,1:-1] = (phi[:-2,2:]-phi[2:,:-2])/(2*sqrt2*dx)
     grad_di[1:-1,1:-1] = (phi[2:,2:]-phi[:-2,:-2])/(2*sqrt2*dx)    
@@ -47,7 +47,7 @@ def gradient(phi, dx):
     
     # Averaging with adjacent cells:
     grad_i = average(grad_i)
-    grad_j = average(grad_j)"""
+    grad_j = average(grad_j)
     return grad_i, grad_j
 
 
@@ -78,7 +78,7 @@ def curl(x_i,x_j, dx):
     return crl
     
 
-def source_1d(phi, dx, xi, M):
+def source_1d(dxdt, phi, dx, xi, M):
     """return the source term in the 1d equation, 
     conservation of mass written using phi"""
        
@@ -86,11 +86,11 @@ def source_1d(phi, dx, xi, M):
     
     n_i, n_j = normalise(grd_phi_i, grd_phi_j)
     
-    return divergence(M*(grd_phi_i-4/xi*phi*(1-phi)*n_i),
+    dxdt += divergence(M*(grd_phi_i-4/xi*phi*(1-phi)*n_i),
                            M*(grd_phi_j-4/xi*phi*(1-phi)*n_j), dx)
 
 
-def torque(phi, dx, rho_l, rho_h, xi, sigma, gravity=10):
+def torque(dxdt, phi, dx, rho_l, rho_h, xi, sigma, gravity=10):
     """Return the torque term in vorticity equation"""    
     kappa = 3/2*sigma*xi
     eta = 12*sigma/xi
@@ -103,7 +103,7 @@ def torque(phi, dx, rho_l, rho_h, xi, sigma, gravity=10):
     
     F_j = (4*eta*phi*(phi-1)*(phi-1/2)-kappa*laplacian(phi,dx))*grd_phi_j
     
-    return curl(F_i, F_j, dx)
+    dxdt += curl(F_i, F_j, dx)
     
     
     

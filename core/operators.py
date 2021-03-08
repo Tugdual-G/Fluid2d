@@ -330,15 +330,14 @@ class Operators(Param):
         
         i_phi = self.varname_list.index('phi')
         i_w = self.varname_list.index('vorticity')
-        
-        
+                
         phi = x[i_phi]
-        source = drplt.source_1d(phi, self.dx, xi, M)
-        torque = drplt.torque(phi, self.dx, rho_l, rho_h, xi, sigma)
+        
+        drplt.source_1d(dxdt[i_phi], phi, self.dx, xi, M)
+        drplt.torque(dxdt[i_w], phi, self.dx, rho_l, rho_h, xi, sigma)
 
-        #!!!self.fill_halo(y)
-        dxdt[i_w][:, :] += torque   
-        dxdt[i_phi][:, :] += source
+        #self.fill_halo(phi)
+
     
     def diffx(self, x):
         nh = self.nh

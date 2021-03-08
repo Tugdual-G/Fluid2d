@@ -64,7 +64,7 @@ model = f2d.model
 
 xr, yr = grid.xr, grid.yr
 vor = model.var.get('vorticity')
-buoy = model.var.get('phi')
+phi = model.var.get('phi')
 
 # control parameters of the experiment
 N = 4.  # Brunt Vaisala frequency squared
@@ -100,11 +100,11 @@ def set_buoyancy(param, grid, x0, y0, sigma,
     return y
 
 # Creating a disc of buoyancy: 
-buoy[:, :] = 0.
+buoy = np.zeros_like(phi)
 dtype = 'smooth_step'
 sigma = 0.2*param.Lx
 
-buoy[:] += set_buoyancy(param, grid, 0.5, 0.5, sigma,
+buoy += set_buoyancy(param, grid, 0.5, 0.5, sigma,
                 dtype, ratio=1, sharpness = 50)*-2
 
 def get_phi(buoy):
@@ -119,10 +119,13 @@ print('Ri = %4.2f' % (N**2/S**2))
 
 vor[:, :] = 0.
 
+trq = np.zeros_like(phi)
+
 dx = param.Ly/param.ny
 grad_i, grad_j = gradient(phi, dx)
 n_i, n_j = normalise( grad_i, grad_j)
 grad = np.sqrt(grad_i**2 + grad_j**2)
+torque(trq, phi, dx, rho_l = 1, rho_h = 5, xi = 5*dx, sigma = 0.01)
 
 # =============================================================================
 # In order to check the look of the initial conditions.
@@ -132,9 +135,9 @@ plt.figure(figsize = (8,8))
 
 # Check phi:
 #plt.pcolormesh(grid.xr, grid.yr, phi, shading = 'nearest')
-
+#plt.colorbar()
 #Check the torque:
-plt.pcolormesh(grid.xr, grid.yr, torque(phi, dx, rho_l = 1, rho_h = 5, xi = 3*dx, sigma = 5), shading = 'nearest')
+#plt.pcolormesh(grid.xr, grid.yr, trq, shading = 'nearest')
 
 # Check the source term in equation (1d) :
 #plt.pcolormesh(grid.xr, grid.yr, source_1d(phi, dx, xi = 3*dx, M = 0.01), shading = 'nearest')
@@ -154,4 +157,6 @@ plt.show()
 model.set_psi_from_vorticity()
 
 f2d.loop()
-
+a = model.var.get('phi')
+plt.pcolormesh(grid.xr, grid.yr, a, shading = 'nearest')
+plt.colorbar()
