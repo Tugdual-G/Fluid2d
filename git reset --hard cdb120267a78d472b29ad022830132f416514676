@@ -1,0 +1,205 @@
+[33mcommit b06e76c2e0fc33ae099deaf34492add5415361f0[m[33m ([m[1;36mHEAD -> [m[1;32mgradient_phi[m[33m)[m
+Merge: 8cf5312 d7a4f45
+Author: Tugdual-G <tuhducarfantan@gmail.com>
+Date:   Mon Mar 8 15:22:30 2021 +0100
+
+    Merge branch 'gradient_phi' of https://github.com/Tugdual-G/Fluid2d into gradient_phi
+
+[33mcommit 8cf53129e309b5232f36200a7d6e0c2cfdac0250[m
+Merge: cdb1202 96494dd
+Author: Tugdual-G <tuhducarfantan@gmail.com>
+Date:   Sun Mar 7 20:22:50 2021 +0100
+
+    Merge branch 'gradient_phi' of https://github.com/Tugdual-G/Fluid2d into gradient_phi
+
+[33mcommit d7a4f45e3043d5c2224ad0f2e4d9da378400a8ac[m[33m ([m[1;31morigin/gradient_phi[m[33m)[m
+Merge: cdb1202 96494dd
+Author: Tugdual-G <tuhducarfantan@gmail.com>
+Date:   Sun Mar 7 20:22:50 2021 +0100
+
+    Merge branch 'gradient_phi' of https://github.com/Tugdual-G/Fluid2d into gradient_phi
+
+[33mcommit cdb120267a78d472b29ad022830132f416514676[m
+Author: Tugdual-G <tuhducarfantan@gmail.com>
+Date:   Sun Mar 7 19:30:33 2021 +0100
+
+    Création du modèle "droplet", non-ajouté à la liste des paramètres.
+    Création de "droplet_operator" pour le calcul des rhs avec pour but d'être compilé avec numba .
+    Ajout dans  "operators" du calcul des rhs.
+    Le script goutte utilise maintenant les fonctions de "droplet_operator".
+
+[33mcommit 96494dd1d5c24a74a167c20a035d48ded7ba91da[m
+Author: Tugdual-G <tuhducarfantan@gmail.com>
+Date:   Sun Mar 7 19:30:33 2021 +0100
+
+    Création du modèle "droplet", non-ajouté à la liste des paramètres.
+    Création de "droplet_operator" pour le calcul des rhs avec pour but d'être compilé avec numba .
+    Ajout dans  "operators" du calcul des rhs.
+    Le script goutte utilise maintenant les fonctions de "droplet_operator".
+
+[33mcommit e6f2c8b3ef2a4d9bb18526254f7ad46523f6959c[m
+Author: Tugdual-G <tuhducarfantan@gmail.com>
+Date:   Tue Feb 23 11:14:55 2021 +0100
+
+    Ajout du fichier "terme_droite_1d" afin de visualiser l'impact du terme de l'eq.
+
+[33mcommit 55f22ae25c075e8c1771e5bf64b55e2be99363ce[m[33m ([m[1;32mgoutte_v1[m[33m)[m
+Author: Tugdual-G <tuhducarfantan@gmail.com>
+Date:   Mon Feb 22 21:23:53 2021 +0100
+
+    Ajout du répertoire goutte au répertoire principal, dans lequel se
+    trouve goutte.py et quelques images de test. Implémentation de la
+    fonction indicatrice avec get_ phi() et d'une fonction gradient
+    utilisant les diagonales ainsi que les axes i et j. Les images
+    illustrent l'interet d'utiliser la diagonale pour le gradient.
+    Une fonction set_buoyancy a étée ajoutée, avec une marche adoucie
+    pour former la goutte.
+
+[33mcommit 1b4e5e7908c3d66e69deb2edd99624fb1bae4530[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: pvthinker <roullet@univ-brest.fr>
+Date:   Tue Feb 16 12:17:37 2021 +0100
+
+    Improve the experiment vortex_on_topography.py
+
+[33mcommit 5196e6ab3927b695ddb032907e43d6d1e4c6a3e2[m
+Author: pvthinker <roullet@univ-brest.fr>
+Date:   Tue Feb 16 12:08:09 2021 +0100
+
+    Add experiments to QGbasic
+
+[33mcommit b2992aea9e141a137cee32fed55faba8f975ad40[m
+Merge: eab94cc 2bc243f
+Author: pvthinker <roullet@univ-brest.fr>
+Date:   Sun Jan 19 21:05:24 2020 +0100
+
+    Merge branch 'master' of https://github.com/pvthinker/Fluid2d
+
+[33mcommit 2bc243f5841946ee7820e0699411789b2c5ed363[m
+Author: Markus Reinert <markus-reinert@web.de>
+Date:   Thu Jan 16 08:56:55 2020 +0100
+
+    Make param.cax optional for automatic colorschemes
+    
+    If the parameter colorscheme is set to "minmax" or "symmetric",
+    referring to an automatically set range of the coloraxis, then the
+    parameter cax should be optional, because it has no effect.  This is
+    implemented in this commit.
+
+[33mcommit eab94ccc3cc14fe742f4c6edc789279a8b015751[m
+Author: pvthinker <roullet@univ-brest.fr>
+Date:   Tue Nov 19 17:28:03 2019 +0100
+
+    Fix the QG model
+    
+    The self.set_psi_from_pv() before stage 3/ was commented. It was a big
+    mistake causing the QG model to be crazy.
+    experiments/GyreCirculation/double_gyre.py is working again
+    
+    A warmful thank to Markus was spot the error and the origin of the error
+
+[33mcommit 400748fd4e936d93728568151522f89b81e73bae[m
+Author: pvthinker <roullet@univ-brest.fr>
+Date:   Thu Nov 7 15:47:09 2019 +0100
+
+    Include many pending commits
+
+[33mcommit d66e9cb7e3cccbbab8120515e256847ba52ef431[m
+Author: Guillaume ROULLET <roullet@univ-brest.fr>
+Date:   Mon Jul 22 19:02:24 2019 +0200
+
+    minor fix with param.relaxation
+
+[33mcommit 64463dba4148aadf47ea182f60c7add84272a028[m
+Author: Guillaume ROULLET <roullet@univ-brest.fr>
+Date:   Mon Jul 22 18:37:52 2019 +0200
+
+    Add a a new model 'boussinesqTS'
+    
+    compared to 'boussinesq', the 'buoyancy' is replaced with 'density',
+    which a diagnostic quantity, determined from temperature 'T' and
+    salinity 'S' with a linear equation of state
+
+[33mcommit 5818aa78ece72408df189ad8adde5e6dc589c169[m
+Author: Guillaume ROULLET <roullet@univ-brest.fr>
+Date:   Fri Jun 28 09:37:15 2019 +0200
+
+    add the activate.csh in the zip archive
+
+[33mcommit c85882b35c7aaf5ba88f0c2d1bc423de5be25157[m
+Author: Guillaume ROULLET <roullet@univ-brest.fr>
+Date:   Fri Jun 28 09:28:24 2019 +0200
+
+    put back the Von Karman experiment
+
+[33mcommit e1b3c651f82cfc9714eb8d1eeb1d0b9cda1bdd62[m
+Author: Guillaume ROULLET <roullet@univ-brest.fr>
+Date:   Fri Jun 28 09:27:24 2019 +0200
+
+    make the Von Karman street working again
+
+[33mcommit 8aa8678f0ac6aa00f7e53cd0d26915d8f07b35ff[m
+Author: Markus <kegelkugel@gmx.de>
+Date:   Sun Jun 2 20:34:35 2019 +0200
+
+    Clean up the implementation of forcings
+    
+    The parameter forcing_module has now the default value 'embedded'.
+    Therefore it is not needed to mention the forcing_module at all if it is
+    embedded in the python file.  It is considered a left-over for backwards
+    compatibility, which can be useful in cases where the definition of the
+    forcing is very big, as in the Rayleigh--Benard experiment.
+    The other two experiments with forcing (TwoDimTurb and GyreCirculation)
+    now feature the new, clean, slim way to implement a forcing.  They can
+    be considered a good example for the usage of forcings.
+    
+    The warning message for embedded forcings is corrected.
+    
+    The file core/forcing.py was left over, not needed anymore and is
+    removed now.
+
+[33mcommit cd7ef0ef609906276f7ef2b53ae72daa866fea1a[m
+Author: Guillaume <guillaume.roullet@univ-brest.fr>
+Date:   Sun Jun 2 10:13:28 2019 +0200
+
+    improved fluxes.py: includes (uc, vc) for KE dissipation
+
+[33mcommit a000bbc6af7f9f4c6377d5c1017071ac0df184ff[m
+Author: Guillaume <guillaume.roullet@univ-brest.fr>
+Date:   Sun Jun 2 09:24:26 2019 +0200
+
+    allow the possibility to have the forcing embedded in the user script
+    
+    and also do an exact inversion at each timestep in QG (as opposed to
+    only invert increments)
+
+[33mcommit 3e9f95f3e864dbfc5140492c4ae43581965d6c13[m
+Author: Guillaume Roullet <guillaume.roullet@univ-brest.fr>
+Date:   Fri May 24 18:11:08 2019 +0200
+
+    add a full psi inversion at each time step in euler + make the QG channel symmetric
+
+[33mcommit 1fa53f5890dc7ace6bd82e64f756f83d7f155f2c[m
+Author: Guillaume Roullet <guillaume.roullet@univ-brest.fr>
+Date:   Thu May 16 13:37:57 2019 +0200
+
+    improve the QG_channel experiment
+
+[33mcommit 9002281ed9659f8f2f2e49f0340e91ee33b50d93[m
+Author: Guillaume Roullet <guillaume.roullet@univ-brest.fr>
+Date:   Wed May 15 17:28:00 2019 +0200
+
+    improve the QG channel case, still a todo in quasigeostrophy.py
+    
+    fixed: psi is no longer drifting in time
+
+[33mcommit f39a306b3abd587cb2c14089dea05e446514e50d[m
+Author: Guillaume Roullet <guillaume.roullet@univ-brest.fr>
+Date:   Wed May 15 16:03:44 2019 +0200
+
+    add a new experiment: a QG reentrant channel
+
+[33mcommit ca78b64bc83a2ec07017d6624df17cd7d9d759e4[m
+Author: Guillaume Roullet <guillaume.roullet@univ-brest.fr>
+Date:   Wed May 15 15:50:38 2019 +0200
+
+    debug setting a mean flow in a xperio channel, for the QG model
