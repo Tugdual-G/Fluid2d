@@ -12,20 +12,20 @@ param.expname = 'khi_0'
 
 # domain and resolution
 ratio = 1
-param.ny = 2**8
+param.ny = 2**7
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = 1*ratio
 param.npx = 1
 param.npy = 1
-param.geometry = 'xchannel'
+param.geometry = 'closed'
 
 # time
 param.tend = 2.
 param.cfl = 1.5
 param.adaptable_dt = True
-param.dt = 0.01
-param.dtmax = 0.02
+param.dt = 0.001
+param.dtmax = 0.01
 
 # discretization
 param.order = 5
@@ -41,10 +41,10 @@ param.freq_diag = .1
 # plot
 param.plot_interactive = True
 param.plot_var = 'phi'
-param.cax = [-0.5, 1.5]
+param.cax = [0, 1]
 param.colorscheme = 'imposed'
 param.generate_mp4 = False
-param.cmap = 'inferno'
+param.cmap = 'viridis'
 
 # physics
 param.forcing = False
@@ -66,9 +66,6 @@ xr, yr = grid.xr, grid.yr
 vor = model.var.get('vorticity')
 phi = model.var.get('phi')
 
-# control parameters of the experiment
-N = 4.  # Brunt Vaisala frequency squared
-S = 20.  # vertical shear
 
 
 def set_buoyancy(param, grid, x0, y0, sigma,
@@ -114,9 +111,6 @@ def get_phi(buoy):
 
 phi[:,:] = get_phi(buoy)
 
-
-
-print('Ri = %4.2f' % (N**2/S**2))
 
 vor[:, :] = 0.
 
