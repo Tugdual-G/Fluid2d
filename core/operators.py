@@ -325,7 +325,7 @@ class Operators(Param):
         self.fill_halo(y)
         dxdt[iw][:, :] = y
 
-    def rhs_droplet(self, x, t, dxdt, rho_l, rho_h, xi, sigma, M):    
+    def rhs_droplet(self, x, t, dxdt, rho_l, rho_h, xi, sigma, M, g = 10):    
         """ rho_l = low density, rho_h = high density"""
         
         i_phi = self.varname_list.index('phi')
@@ -334,7 +334,7 @@ class Operators(Param):
         phi = x[i_phi]
         
         drplt.source_1d(dxdt[i_phi], phi, self.dx, xi, M)
-        drplt.torque(dxdt[i_w], phi, self.dx, rho_l, rho_h, xi, sigma)
+        drplt.torque(dxdt[i_w], phi, self.dx, rho_l, rho_h, xi, sigma, gravity = g)
 
         #self.fill_halo(phi)
 

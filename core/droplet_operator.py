@@ -46,8 +46,8 @@ def gradient(phi, dx):
         -grad_dj[1:-1,1:-1]+grad_di[1:-1,1:-1])/sqrt2)/2
     
     # Averaging with adjacent cells:
-    grad_i = average(grad_i)
-    grad_j = average(grad_j)
+    #grad_i = average(grad_i)
+    #grad_j = average(grad_j)
     return grad_i, grad_j
 
 
@@ -73,14 +73,13 @@ def normalise(v_i, v_j):
 
 def curl(x_i,x_j, dx):
     crl = np.zeros_like(x_i, dtype = np.float32)
-    crl[1:-1,1:-1] = ((x_j[2:,1:-1]-x_j[:-2,1:-1])-(x_i[1:-1,2:]-
-                                                   x_i[1:-1,:-2]))/(2*dx)
+    crl[1:-1,1:-1] = ((x_i[1:-1,2:]-x_i[1:-1,:-2])-(x_j[2:,1:-1]-x_j[:-2,1:-1]))/(2*dx)
     return crl
     
 
 def source_1d(dxdt, phi, dx, xi, M):
     """return the source term in the 1d equation, 
-    conservation of mass written using phi"""
+    conservation of mass, using phi"""
        
     grd_phi_i, grd_phi_j = gradient(phi, dx)
     
