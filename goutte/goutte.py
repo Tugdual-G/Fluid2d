@@ -12,7 +12,7 @@ param.expname = 'khi_0'
 
 # domain and resolution
 ratio = 1
-param.ny = 2**7
+param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = 1*ratio
@@ -21,7 +21,7 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 2.
+param.tend = 0.2
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
@@ -32,18 +32,18 @@ param.order = 5
 param.timestepping = 'RK3_SSP'
 
 # output
-param.var_to_save = ['vorticity', 'psi', 'u', 'v', 'phi']
+param.var_to_save = ['phi']
 param.list_diag = 'all'
 param.freq_plot = 5
-param.freq_his = .02
+param.freq_his = .01
 param.freq_diag = .1
 
 # plot
 param.plot_interactive = True
 param.plot_var = 'phi'
-param.cax = [0, 1]
+param.cax = [-0.2, 1.2]
 param.colorscheme = 'imposed'
-param.generate_mp4 = False
+param.generate_mp4 = True
 param.cmap = 'viridis'
 
 # physics
@@ -61,10 +61,6 @@ grid = Grid(param)
 
 f2d = Fluid2d(param, grid)
 model = f2d.model
-
-xr, yr = grid.xr, grid.yr
-vor = model.var.get('vorticity')
-phi = model.var.get('phi')
 
 
 
@@ -96,24 +92,56 @@ def set_buoyancy(param, grid, x0, y0, sigma,
 
     return y
 
-# Creating a disc of buoyancy: 
-buoy = np.zeros_like(phi)
-dtype = 'smooth_step'
-sigma = 0.2*param.Lx
-
-buoy += -1*set_buoyancy(param, grid, 0.5, 0.5, sigma,
-                dtype, ratio=1, sharpness = 100)
-
-
 def get_phi(buoy):
     phi =  np.amax(buoy)-buoy
     return phi/(np.amax(phi)-np.amin(phi))
 
-phi[:,:] = get_phi(buoy)
+def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 100):   
+    xr, yr = grid.xr, grid.yr
+    # ratio controls the ellipticity, ratio=1 is a disc
+    r = np.sqrt((xr-param.Lx*x0)**2+(yr-param.Ly*y0)**2*ratio**2)
 
+    y = np.abs(1-np.tanh((r-sigma)*sharpness))
+    y /= np.amax(y)
+    phi[phi<y] = y[phi<y]
+
+def del_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 100):
+    xr, yr = grid.xr, grid.yr
+    # ratio controls the ellipticity, ratio=1 is a disc
+    r = np.sqrt((xr-param.Lx*x0)**2+(yr-param.Ly*y0)**2*ratio**2)
+
+    y = np.abs(1+np.tanh((r-sigma)*sharpness))
+    y /= np.amax(y)
+    phi[phi>y] = y[phi>y]
+
+vor = model.var.get('vorticity')
+phi = model.var.get('phi')
+
+
+
+
+# Creating a distribution of high density liquid: 
+
+sigma = 0.05*param.Lx
+
+phi[:,:] = 0.
+
+# Drop:
+add_phi(phi, param, grid, 0.75, 0.9, sigma)
+
+phi[grid.yr<0.53]= 0.25
+phi[grid.yr<0.52]= 0.5
+phi[grid.yr<0.51]= 0.75
+phi[grid.yr<0.5] = 1.
+#Buble:
+del_phi(phi, param, grid, 0.25, 0.1, sigma)
 
 vor[:, :] = 0.
 
+
+# =============================================================================
+# In order to check the look of the initial conditions.
+# =============================================================================
 
 
 dx = param.Ly/param.ny
@@ -121,14 +149,9 @@ grad_i, grad_j = gradient(phi, dx)
 n_i, n_j = normalise( grad_i, grad_j)
 grad = np.sqrt(grad_i**2 + grad_j**2)
 
-#on récupère le torque
+#computing the torque:
 trq = np.zeros_like(phi)
 torque(trq, phi, dx, rho_l = 1, rho_h = 10, xi = 5*dx, sigma = 0.01)
-
-# =============================================================================
-# In order to check the look of the initial conditions.
-# =============================================================================
-
 
 #plt.figure(figsize = (8,8))
 

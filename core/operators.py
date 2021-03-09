@@ -335,7 +335,8 @@ class Operators(Param):
         
         drplt.source_1d(dxdt[i_phi], phi, self.dx, xi, M)
         drplt.torque(dxdt[i_w], phi, self.dx, rho_l, rho_h, xi, sigma, gravity = g)
-
+        phi[phi>1.] = 1.
+        phi[phi<0.] = 0       
         #self.fill_halo(phi)
 
     

@@ -90,8 +90,7 @@ class Droplet(object):
 
         # 1/ integrate advection
         self.tscheme.forward(self.var.state, t, dt)
-
-        
+                
         # 2/ integrate source
         if self.noslip:
             self.add_noslip(self.var.state)
@@ -106,8 +105,8 @@ class Droplet(object):
         self.ope.rhs_adv(x, t, dxdt)
 
         # db/dx is a source term for the vorticity
-        self.ope.rhs_droplet(x, t, dxdt, rho_l = 1, rho_h = 50, xi = 3*self.dx,
-                             sigma = 0.5, M = 0., g = -1.)
+        self.ope.rhs_droplet(x, t, dxdt, rho_l = 1, rho_h = 1000, xi = 3*self.dx,
+                             sigma = 15., M = 0., g = -10.)
               
         self.ope.invert_vorticity(dxdt, flag='fast')
 
