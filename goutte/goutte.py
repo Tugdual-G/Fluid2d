@@ -11,8 +11,8 @@ param.modelname = 'droplet'
 param.expname = 'khi_0'
 
 # domain and resolution
-ratio = 1
-param.ny = 2**8
+ratio = 0.5
+param.ny = 2**9
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = 1*ratio
@@ -21,7 +21,7 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 0.2
+param.tend = 0.4
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
@@ -39,16 +39,16 @@ param.freq_his = .01
 param.freq_diag = .1
 
 # plot
-param.plot_interactive = True
+param.plot_interactive = False
 param.plot_var = 'phi'
-param.cax = [-0.2, 1.2]
+param.cax = [0., 1.]
 param.colorscheme = 'imposed'
 param.generate_mp4 = True
 param.cmap = 'viridis'
 
 # physics
 param.forcing = False
-param.noslip = False
+param.noslip = True
 param.diffusion = False
 param.forcing = False
 
@@ -122,19 +122,20 @@ phi = model.var.get('phi')
 
 # Creating a distribution of high density liquid: 
 
-sigma = 0.05*param.Lx
+
 
 phi[:,:] = 0.
+h = 0.2
+phi[grid.yr<h+0.015]= 0.25
+phi[grid.yr<h+0.01]= 0.5
+phi[grid.yr<h+0.005]= 0.75
+phi[grid.yr<h] = 1.
 
-# Drop:
-add_phi(phi, param, grid, 0.75, 0.9, sigma)
+# Droplets:
+add_phi(phi, param, grid, 0.5, 0.88, 0.03)
 
-phi[grid.yr<0.53]= 0.25
-phi[grid.yr<0.52]= 0.5
-phi[grid.yr<0.51]= 0.75
-phi[grid.yr<0.5] = 1.
-#Buble:
-del_phi(phi, param, grid, 0.25, 0.1, sigma)
+
+
 
 vor[:, :] = 0.
 
@@ -144,14 +145,14 @@ vor[:, :] = 0.
 # =============================================================================
 
 
-dx = param.Ly/param.ny
-grad_i, grad_j = gradient(phi, dx)
-n_i, n_j = normalise( grad_i, grad_j)
-grad = np.sqrt(grad_i**2 + grad_j**2)
+#dx = param.Ly/param.ny
+#grad_i, grad_j = gradient(phi, dx)
+#n_i, n_j = normalise( grad_i, grad_j)
+#grad = np.sqrt(grad_i**2 + grad_j**2)
 
 #computing the torque:
-trq = np.zeros_like(phi)
-torque(trq, phi, dx, rho_l = 1, rho_h = 10, xi = 5*dx, sigma = 0.01)
+#trq = np.zeros_like(phi)
+#torque(trq, phi, dx, rho_l = 1, rho_h = 10, xi = 5*dx, sigma = 0.01)
 
 #plt.figure(figsize = (8,8))
 
