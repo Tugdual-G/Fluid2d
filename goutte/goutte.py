@@ -11,17 +11,17 @@ param.modelname = 'droplet'
 param.expname = 'khi_0'
 
 # domain and resolution
-ratio = 0.5
-param.ny = 2**9
+ratio = 1
+param.ny = 2**8
 param.nx = param.ny*ratio
-param.Ly = 1.
-param.Lx = 1*ratio
+param.Ly = 0.2
+param.Lx = param.Ly*ratio
 param.npx = 1
 param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 0.4
+param.tend = 0.3
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
@@ -29,7 +29,7 @@ param.dtmax = 0.01
 
 # discretization
 param.order = 5
-param.timestepping = 'RK3_SSP'
+param.timestepping = 'RK4_LS'
 
 # output
 param.var_to_save = ['phi']
@@ -39,7 +39,7 @@ param.freq_his = .01
 param.freq_diag = .1
 
 # plot
-param.plot_interactive = False
+param.plot_interactive = True
 param.plot_var = 'phi'
 param.cax = [0., 1.]
 param.colorscheme = 'imposed'
@@ -96,7 +96,9 @@ def get_phi(buoy):
     phi =  np.amax(buoy)-buoy
     return phi/(np.amax(phi)-np.amin(phi))
 
-def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 100):   
+
+def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 200):
+    """ Create a droplet of high density liquid """
     xr, yr = grid.xr, grid.yr
     # ratio controls the ellipticity, ratio=1 is a disc
     r = np.sqrt((xr-param.Lx*x0)**2+(yr-param.Ly*y0)**2*ratio**2)
@@ -105,39 +107,33 @@ def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 100):
     y /= np.amax(y)
     phi[phi<y] = y[phi<y]
 
-def del_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 100):
+def del_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 200):
+    """ Create a bubble of low density liquid"""
     xr, yr = grid.xr, grid.yr
     # ratio controls the ellipticity, ratio=1 is a disc
     r = np.sqrt((xr-param.Lx*x0)**2+(yr-param.Ly*y0)**2*ratio**2)
 
-    y = np.abs(1+np.tanh((r-sigma)*sharpness))
-    y /= np.amax(y)
+    y = np.abs(1+np.tanh((r-sigma)*sharpness))/2
     phi[phi>y] = y[phi>y]
+
+
 
 vor = model.var.get('vorticity')
 phi = model.var.get('phi')
+vor[:, :] = 0.
 
 
-
-
-# Creating a distribution of high density liquid: 
-
-
+# =============================================================================
+# Distribution of high density liquid 
+# =============================================================================
 
 phi[:,:] = 0.
-h = 0.2
-phi[grid.yr<h+0.015]= 0.25
-phi[grid.yr<h+0.01]= 0.5
-phi[grid.yr<h+0.005]= 0.75
-phi[grid.yr<h] = 1.
+
+# High density fluid at the bottom:
+phi[:,:]= np.abs(1-np.tanh(((grid.yr)-0.06)*250))/2
 
 # Droplets:
-add_phi(phi, param, grid, 0.5, 0.88, 0.03)
-
-
-
-
-vor[:, :] = 0.
+add_phi(phi, param, grid, 0.5, 0.8, 0.005, sharpness=300)
 
 
 # =============================================================================

@@ -8,21 +8,20 @@ import numpy as np
 from numba import jit
 
 @jit(nopython = True, parallel=True)
+def average(n, weight = 0.15):
+    sqrt2 = np.sqrt(2)
+    """return the weighted average with adjacent cells."""        
+    n[1:-1, 1:-1] = (n[2:,2:]/sqrt2 + n[2:,1:-1] + n[2:,:-2]/sqrt2 +
+                    n[:-2,:-2]/sqrt2 + n[:-2, 1:-1] + n[:-2,2:]/sqrt2 +
+                    n[1:-1,:-2] + n[1:-1, 2:])*(1-weight)/8 + n[1:-1, 1:-1]*weight
+
+@jit(nopython = True, parallel=True)
 def gradient(phi, dx):
     """Compute the gradient of phi with differents approches: in directions i,
     j and along the diagonals.
     The returned gradient is averaged between the two methods.
     A second averaging is done with adjacent cells."""
-   
-    
-    def average(n, weight = 0.15):
-        sqrt2 = np.sqrt(2)
-        """return the weighted average with adjacent cells."""        
-        n[1:-1, 1:-1] = (n[2:,2:]/sqrt2 + n[2:,1:-1] + n[2:,:-2]/sqrt2 +
-                        n[:-2,:-2]/sqrt2 + n[:-2, 1:-1] + n[:-2,2:]/sqrt2 +
-                        n[1:-1,:-2] + n[1:-1, 2:])*(1-weight)/8 + n[1:-1, 1:-1]*weight
-
-
+       
     # Creating gradients arrays:
     grad_i = np.zeros_like(phi, dtype = np.float32)
     grad_j = np.zeros_like(phi, dtype = np.float32)
@@ -42,8 +41,7 @@ def gradient(phi, dx):
     grad_j[0,1:-1] = (phi[0,2:]-phi[0,:-2])/(2*dx)    
     grad_j[-1,1:-1] = (phi[-1,2:]-phi[-1,:-2])/(2*dx)      
     grad_j[1:-1, 0] = (phi[1:-1,1]-phi[1:-1,0])/dx    
-    grad_j[1:-1, -1] = (phi[1:-1,-1]-phi[1:-1,-2])/dx    
-    
+    grad_j[1:-1, -1] = (phi[1:-1,-1]-phi[1:-1,-2])/dx        
     
     """# Diagonal gradients:
     sqrt2 = np.sqrt(2)
@@ -68,6 +66,16 @@ def laplacian(x,dx):
     lplc = np.zeros_like(x, dtype = np.float64)
     lplc[1:-1,1:-1] = (x[:-2,1:-1] + x[2:,1:-1] + x[1:-1,:-2] + x[1:-1,2:]
                      - 4*x[1:-1,1:-1])/(dx**2)
+    #boundaries:
+    #!!! Ne fonctionne pas pour le moment
+    # left 
+    lplc[1:-1,0] = (x[2:,0] + x[:-2,0]-2*x[1:-1,0])/(dx**2) + 2*(x[1:-1,2]-2*x[1:-1,1]-x[1:-1,0])/(3*dx**2)
+    # Right 
+    lplc[1:-1,-1] = (x[2:,-1] + x[:-2,-1]-2*x[1:-1,-1])/(dx**2) + 2*(x[1:-1,-3]-2*x[1:-1,-2]+x[1:-1,-1])/(3*dx**2)
+    # Bottom
+    lplc[0,1:-1] = 2*(x[2,1:-1]-2*x[1,1:-1]-x[0,1:-1])/(3*dx**2) + (x[0,2:] + x[0,:-2]-2*x[0,1:-1])/(dx**2)
+    # Top
+    lplc[-1,1:-1] = 2*(x[-3,1:-1]-2*x[-2,1:-1]+x[-1,1:-1])/(3*dx**2) + (x[-1,2:] + x[-1,:-2]-2*x[-1,1:-1])/(dx**2)  
     
     return lplc
 
@@ -116,7 +124,7 @@ def curl(x_i,x_j, dx):
 def source_1d(dxdt, phi, dx, xi, M):
     """return the source term in the 1d equation, 
     conservation of mass, using phi"""
-       
+ 
     grd_phi_i, grd_phi_j = gradient(phi, dx)
     
     n_i, n_j = normalise(grd_phi_i, grd_phi_j)
@@ -129,16 +137,17 @@ def torque(dxdt, phi, dx, rho_l, rho_h, xi, sigma, gravity=10):
     """Return the torque term in vorticity equation"""    
     kappa = 3/2*sigma*xi
     eta = 12*sigma/xi
-    rho = (1-phi)*rho_l + phi*rho_h 
-        
+ 
     grd_phi_i, grd_phi_j = gradient(phi, dx)    
         
-    F_i = rho*gravity + (4*eta*phi*(phi-1)*(phi-1/2)-
+    F_i = ((1-phi)*rho_l + phi*rho_h)*gravity + (4*eta*phi*(phi-1)*(phi-1/2)-
                          kappa*laplacian(phi,dx))*grd_phi_i
     
     F_j = (4*eta*phi*(phi-1)*(phi-1/2)-kappa*laplacian(phi,dx))*grd_phi_j
     
-    dxdt += curl(F_i, F_j, dx) 
+    dxdt += curl(F_i, F_j, dx)
+    
+    # In order to maintain phi in [0,1]:
     """for i in range(np.shape(phi)[0]):
         for j in range(np.shape(phi)[1]):
             if phi[i,j] > 1:
@@ -147,9 +156,8 @@ def torque(dxdt, phi, dx, rho_l, rho_h, xi, sigma, gravity=10):
                 phi[i,j] = 0"""
 
 @jit(nopython = True, parallel=True)
-def viscosity(dxdt, w, dx, phi, nu_l = 15*10**-6, nu_h = 10**-4):
-    nu = (1-phi)*nu_l + phi*nu_h
-    dxdt += laplacian(w,dx)*nu
+def viscosity(dxdt, w, dx, phi, nu_l = 15*10**-6, nu_h = 10**-5):
+    dxdt += laplacian(w,dx)*((1-phi)*nu_l + phi*nu_h)
         
  
     

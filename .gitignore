@@ -1,2 +1,2 @@
-$ cat .gitignore
-*.pyc
+__pycache__/
+*.py[oc]
