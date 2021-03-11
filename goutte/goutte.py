@@ -39,7 +39,7 @@ param.freq_his = .01
 param.freq_diag = .1
 
 # plot
-param.plot_interactive = True
+param.plot_interactive = False
 param.plot_var = 'phi'
 param.cax = [0., 1.]
 param.colorscheme = 'imposed'
@@ -51,6 +51,12 @@ param.forcing = False
 param.noslip = True
 param.diffusion = False
 param.forcing = False
+
+# rho, sigma and M
+param.rho_h = 1000.
+param.rho_l = 1.
+param.M = 0.
+param.sigma = 1.
 
 param.gravity = 1.
 

@@ -20,7 +20,8 @@ class Droplet(object):
                            'alphaT', 'betaS',
                            'diffusion', 'Kdiff', 'myrank',
                            'forcing_module', 'gravity', 'isisland',
-                           'customized', 'custom_module', 'additional_tracer']
+                           'customized', 'custom_module', 'additional_tracer',
+                           'rho_h', 'rho_l', 'M', 'sigma']
         param.copy(self, self.list_param)
 
         # for potential energy
@@ -105,8 +106,9 @@ class Droplet(object):
         self.ope.rhs_adv(x, t, dxdt)
 
         # db/dx is a source term for the vorticity
-        self.ope.rhs_droplet(x, t, dxdt, rho_l = 1.22, rho_h = 1000, xi = 3*self.dx,
-                             sigma = 10., M = 0.00005, g = -10.)
+
+        self.ope.rhs_droplet(x, t, dxdt, xi = 3*self.dx,
+                             sigma = self.sigma, M = self.M, rho_l = self.rho_l, rho_h = self.rho_h, g = - self.gravity)
               
         self.ope.invert_vorticity(dxdt, flag='fast')
 
