@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 param = Param('default.xml')
 param.modelname = 'droplet'
-param.expname = 'xi_3_2'
+param.expname = 'drop_'
 
 # domain and resolution
 ratio = 1
@@ -39,7 +39,7 @@ param.freq_his = .01
 param.freq_diag = .1
 
 # plot
-param.plot_interactive = False
+param.plot_interactive = True
 param.plot_var = 'phi'
 param.cax = [0., 1.]
 param.colorscheme = 'imposed'
@@ -57,7 +57,6 @@ param.rho_h = 1000.
 param.rho_l = 1.
 param.M = 0.
 param.sigma = 1.
-
 param.gravity = 1.
 
 nh = param.nh
@@ -67,40 +66,6 @@ grid = Grid(param)
 
 f2d = Fluid2d(param, grid)
 model = f2d.model
-
-
-
-def set_buoyancy(param, grid, x0, y0, sigma,
-           density_type, ratio=1, sharpness = 200):
-    
-
-    xr, yr = grid.xr, grid.yr
-    # ratio controls the ellipticity, ratio=1 is a disc
-    x = np.sqrt((xr-param.Lx*x0)**2+(yr-param.Ly*y0)**2*ratio**2)
-
-    y = x.copy()*0.
-
-    if density_type in ('gaussian', 'cosine', 'step', 'smooth_step'):
-        if density_type == 'gaussian':
-            y = np.exp(-x**2/(sigma**2))
-
-        elif density_type == 'cosine':
-            y = np.cos(x/sigma*np.pi/2)
-            y[x > sigma] = 0.
-
-        elif density_type == 'step':
-            y[x <= sigma] = 1.
-        
-        elif density_type == 'smooth_step':
-            y = -np.tanh((x-sigma)*sharpness)
-    else:
-        print('this kind of density (%s) is not defined' % density_type)
-
-    return y
-
-def get_phi(buoy):
-    phi =  np.amax(buoy)-buoy
-    return phi/(np.amax(phi)-np.amin(phi))
 
 
 def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 200):
@@ -139,7 +104,7 @@ phi[:,:] = 0.
 phi[:,:]= np.abs(1-np.tanh(((grid.yr)-param.Ly*0.2)*200))/2
 
 # Droplets:
-add_phi(phi, param, grid, 0.5, 0.7, 0.05, sharpness=200)
+add_phi(phi, param, grid, 0.5, 0.7, 0.03, sharpness=200)
 
 
 # =============================================================================
