@@ -4,24 +4,24 @@ from grid import Grid
 from fluid2d import Fluid2d
 import numpy as np
 import matplotlib.pyplot as plt
-from droplet_operator import gradient, normalise, torque, source_1d
+
 
 param = Param('default.xml')
 param.modelname = 'droplet'
-param.expname = 'khi_0'
+param.expname = 'xi_3_2'
 
 # domain and resolution
 ratio = 1
 param.ny = 2**8
 param.nx = param.ny*ratio
-param.Ly = 0.2
+param.Ly = 1.
 param.Lx = param.Ly*ratio
 param.npx = 1
 param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 0.3
+param.tend = 0.2
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
@@ -130,10 +130,10 @@ vor[:, :] = 0.
 phi[:,:] = 0.
 
 # High density fluid at the bottom:
-phi[:,:]= np.abs(1-np.tanh(((grid.yr)-0.06)*250))/2
+phi[:,:]= np.abs(1-np.tanh(((grid.yr)-param.Ly*0.2)*200))/2
 
 # Droplets:
-add_phi(phi, param, grid, 0.5, 0.8, 0.005, sharpness=300)
+add_phi(phi, param, grid, 0.5, 0.7, 0.05, sharpness=200)
 
 
 # =============================================================================
