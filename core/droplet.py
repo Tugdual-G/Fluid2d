@@ -99,7 +99,7 @@ class Droplet(object):
         if self.customized:
             self.extrastep.do(self.var, t, dt)
 
-
+        
     def dynamics(self, x, t, dxdt):
         """ Gives the right hand side to integrate in dxdt"""
         

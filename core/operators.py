@@ -334,8 +334,9 @@ class Operators(Param):
         phi = x[i_phi]
         
         drplt.source_1d(dxdt[i_phi], phi, self.dx, xi, M)
-        drplt.torque(dxdt[i_w], phi, self.dx, rho_l, rho_h, xi, sigma, gravity = g)
-        drplt.viscosity(dxdt[i_w], x[i_w], self.dx, phi)            
+        drplt.torque(dxdt[i_w], phi, self.dx, rho_l, rho_h, xi, sigma, gravity = g)        
+        drplt.anti_diffusion(phi)
+        drplt.viscosity(dxdt[i_w], x[i_w], self.dx, phi, nu_l = 15*10**-6, nu_h = 10**-4)            
         #self.fill_halo(phi)
 
     

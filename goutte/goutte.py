@@ -8,11 +8,11 @@ import matplotlib.pyplot as plt
 
 param = Param('default.xml')
 param.modelname = 'droplet'
-param.expname = 'drop_'
+param.expname = 'drop_diag'
 
 # domain and resolution
 ratio = 1
-param.ny = 2**8
+param.ny = 2**7
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -32,10 +32,10 @@ param.order = 5
 param.timestepping = 'RK4_LS'
 
 # output
-param.var_to_save = ['phi']
+param.var_to_save = ['phi', "u", "v", "vorticity"]
 param.list_diag = 'all'
 param.freq_plot = 5
-param.freq_his = .01
+param.freq_his = .005
 param.freq_diag = .1
 
 # plot
@@ -56,7 +56,7 @@ param.forcing = False
 param.rho_h = 1000.
 param.rho_l = 1.
 param.M = 0.
-param.sigma = 1.
+param.sigma = 5.
 param.gravity = 1.
 
 nh = param.nh
@@ -101,11 +101,10 @@ vor[:, :] = 0.
 phi[:,:] = 0.
 
 # High density fluid at the bottom:
-phi[:,:]= np.abs(1-np.tanh(((grid.yr)-param.Ly*0.2)*200))/2
+#phi[:,:]= np.abs(1-np.tanh(((grid.yr)-param.Ly*0.1)*200))/2
 
 # Droplets:
-add_phi(phi, param, grid, 0.5, 0.7, 0.03, sharpness=200)
-
+add_phi(phi, param, grid, 0.5, 0.8, 0.05, sharpness=200)
 
 # =============================================================================
 # In order to check the look of the initial conditions.
@@ -144,6 +143,3 @@ model.set_psi_from_vorticity()
 
 f2d.loop()
 
-"""plt.figure(figsize = (8,8))
-plt.pcolormesh(grid.xr, grid.yr, phi, shading = 'nearest')
-plt.colorbar()"""
