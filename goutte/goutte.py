@@ -9,11 +9,11 @@ import droplet_operator as do
 
 param = Param('default.xml')
 param.modelname = 'droplet'
-param.expname = 'test__r8_sigm0-5'
+param.expname = 'test'
 
 # domain and resolution
 ratio = 1
-param.ny = 2**8
+param.ny = 2**9
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -55,7 +55,6 @@ param.forcing = False
 
 # rho, sigma and M
 param.rho_h = 10.
-param.rho_0 = 1.0697104958040833
 param.rho_l = 1.
 param.M = 0.0
 param.sigma = 0.5
@@ -68,8 +67,7 @@ nh = param.nh
 grid = Grid(param)
 
 
-f2d = Fluid2d(param, grid)
-model = f2d.model
+
 
 
 def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness=200):
@@ -93,22 +91,20 @@ def del_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness=200):
     phi[phi > y] = y[phi > y]
 
 
-vor = model.var.get('vorticity')
-phi = model.var.get('phi')
-vor[:, :] = 0.
+phi0 = np.zeros((param.ny+6, param.nx+6))
 
 
 # =============================================================================
 # Distribution of high density liquid
 # =============================================================================
 
-phi[:, :] = 0.
+
 
 # High density fluid at the bottom:
 #phi[:,:]= np.abs(1-np.tanh(((grid.yr)-param.Ly*0.1)*200))/2
 
 # Droplets:
-add_phi(phi, param, grid, 0.5, 0.7, 0.05, sharpness=100)
+add_phi(phi0, param, grid, 0.5, 0.7, 0.05, sharpness=100)
 
 
 
@@ -116,10 +112,16 @@ def mean_rho(phi, rho_l, rho_h):
     average_phi = np.sum(phi)/(np.shape(phi)[0]*np.shape(phi)[1])
     return average_phi*rho_h + (1-average_phi)*rho_l 
  
-param.rho_0 = mean_rho(phi, param.rho_l, param.rho_h)
-print(param.rho_0)
+param.rho_0 = mean_rho(phi0, param.rho_l, param.rho_h)
 
 
+f2d = Fluid2d(param, grid)
+model = f2d.model
+
+vor = model.var.get('vorticity')
+phi = model.var.get('phi')
+vor[:, :] = 0.
+phi[:, :] = phi0
 # =============================================================================
 # In order to check the look of the initial conditions.
 # =============================================================================

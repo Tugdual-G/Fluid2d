@@ -7,7 +7,6 @@ Created on Sun Mar  7 14:30:15 2021
 import numpy as np
 from numba import jit, prange
 
-
 @jit(nopython=True, parallel=True, cache=True)
 def gradient_i(phi, dx):
     """Compute the gradient of phi with differents approches: in directions i,
@@ -166,7 +165,8 @@ def torque(dxdt, phi, density, dx, rho_l, rho_h, rho_0, xi, sigma, gravity=10):
     F_j = (4*eta*phi*(phi-1)*(phi-1/2)-kappa *
            laplacian(phi, dx))*gradient_j(phi, dx)
 
-    dxdt += (gradient_j(density-rho_0, dx)*gravity + curl(F_i, F_j, dx))/rho_0
+    dxdt += (gradient_j(density, dx)*gravity + curl(F_i, F_j, dx))/rho_0
+
 
 @jit(nopython=True, parallel=True, cache=True)
 def restrict_phi(phi):
@@ -182,6 +182,7 @@ def restrict_phi(phi):
 @jit(nopython=True, parallel=True, cache=True)
 def viscosity(dxdt, w, dx, phi, nu_l=15*10**-6, nu_h=10**-3):
     dxdt += laplacian(w, dx)*((1-phi)*nu_l + phi*nu_h)
+
 
 
 @jit(nopython=True, parallel=True, cache=True)
