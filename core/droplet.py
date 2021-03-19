@@ -21,7 +21,7 @@ class Droplet(object):
                            'diffusion', 'Kdiff', 'myrank',
                            'forcing_module', 'gravity', 'isisland',
                            'customized', 'custom_module', 'additional_tracer',
-                           'rho_h', 'rho_l', 'M', 'sigma']
+                           'rho_h', 'rho_l', 'rho_0', 'M', 'sigma', 'nu_h', 'nu_l']
         param.copy(self, self.list_param)
 
         # for potential energy
@@ -41,7 +41,7 @@ class Droplet(object):
                 param.tracer_list.append(trac)
 
         self.varname_list = param.varname_list
-        
+
         param.sizevar = [grid.nyl, grid.nxl]
         self.var = Var(param)
         dref = self.var.get('density').copy()
@@ -54,10 +54,11 @@ class Droplet(object):
         # for timescheme
         self.tscheme = Timescheme(param, self.var.state)
         self.tscheme.set(self.dynamics, self.timestepping)
-        
+
         if self.forcing:
             if self.forcing_module == 'embedded':
-                print('Warning: check that you have indeed added the forcing to the model')
+                print(
+                    'Warning: check that you have indeed added the forcing to the model')
                 print('Right below the line    : model = f2d.model')
                 print('you should have the line: model.forc = Forcing(param, grid)')
 
@@ -69,7 +70,8 @@ class Droplet(object):
                 except ImportError:
                     print('module %s for forcing cannot be found'
                           % self.forcing_module)
-                    print('make sure file **%s.py** exists' % self.forcing_module)
+                    print('make sure file **%s.py** exists' %
+                          self.forcing_module)
                     exit(0)
 
                 self.forc = f.Forcing(param, grid)
@@ -91,7 +93,7 @@ class Droplet(object):
 
         # 1/ integrate advection
         self.tscheme.forward(self.var.state, t, dt)
-                
+
         # 2/ integrate source
         if self.noslip:
             self.add_noslip(self.var.state)
@@ -99,23 +101,23 @@ class Droplet(object):
         if self.customized:
             self.extrastep.do(self.var, t, dt)
 
-        
     def dynamics(self, x, t, dxdt):
         """ Gives the right hand side to integrate in dxdt"""
-        
+
         self.ope.rhs_adv(x, t, dxdt)
 
         # db/dx is a source term for the vorticity
 
-        self.ope.rhs_droplet(x, t, dxdt, xi = 3*self.dx,
-                             sigma = self.sigma, M = self.M, rho_l = self.rho_l, rho_h = self.rho_h, g = - self.gravity)
-              
+        self.ope.rhs_droplet(x, t, dxdt, xi=3*self.dx,
+                             sigma=self.sigma, M=self.M, rho_l=self.rho_l,
+                             rho_h=self.rho_h, rho_0=self.rho_0, g=- self.gravity,
+                             nu_h=self.nu_h, nu_l=self.nu_l)
+
         self.ope.invert_vorticity(dxdt, flag='fast')
 
     def add_noslip(self, x):
         self.ope.rhs_noslip(x, self.source)
         self.ope.invert_vorticity(x, flag='fast', island=self.isisland)
-
 
     def set_psi_from_vorticity(self):
         self.ope.invert_vorticity(self.var.state, island=self.isisland)

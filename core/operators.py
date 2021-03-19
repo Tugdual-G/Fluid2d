@@ -6,6 +6,7 @@ import fortran_operators as fo
 import fortran_diag as fd
 import droplet_operator as drplt
 
+
 class Operators(Param):
 
     def __init__(self, param, grid):
@@ -69,7 +70,7 @@ class Operators(Param):
             print('-'*50)
             print(' Multigrid hierarchy')
             print('-'*50)
-        
+
         if hasattr(self, 'qgoperator'):
             pp['qgoperator'] = True
             pp['Rd'] = self.Rd
@@ -101,10 +102,10 @@ class Operators(Param):
             self.cst[1] = grid.dy
             self.cst[2] = 0.05
             self.cst[3] = 0  # umax
-            self.cst[4] = 0 # unused
+            self.cst[4] = 0  # unused
             # should be updated at each timestep
             # self.cst[3]=param.umax
-            
+
         else:
             self.fortran_adv = fa.adv_upwind
             self.cst[0] = grid.dx
@@ -114,7 +115,6 @@ class Operators(Param):
             self.cst[4] = self.aparab
             # should be updated at each timestep
             # self.cst[3]=param.umax
-
 
         # controls the flux splitting method
         # 0 = min/max
@@ -305,7 +305,7 @@ class Operators(Param):
 
         y = dxdt[iw]
         b = x[ib]
-        #y[1:-1, 1:-1] += self.gravity*self.diffx(b)
+        # y[1:-1, 1:-1] += self.gravity*self.diffx(b)
         y *= self.msk
         fo.add_torque(self.msk, b, self.dx, self.nh, self.gravity, y)
         self.fill_halo(y)
@@ -318,28 +318,31 @@ class Operators(Param):
 
         y = dxdt[iw]
         b = x[ib]
-        #y[1:-1, 1:-1] += self.gravity*self.diffx(b)
+        # y[1:-1, 1:-1] += self.gravity*self.diffx(b)
         # y *= self.msk
         # trick: use -gravity to account that density is opposite to buoyancy
         fo.add_torque(self.msk, b, self.dx, self.nh, -self.gravity, y)
         self.fill_halo(y)
         dxdt[iw][:, :] = y
 
-    def rhs_droplet(self, x, t, dxdt, rho_l, rho_h, xi, sigma, M, g):    
+    def rhs_droplet(self, x, t, dxdt, rho_l, rho_h, rho_0, xi, sigma, M, g, nu_h, nu_l):
         """ rho_l = low density, rho_h = high density"""
-        
+
         i_phi = self.varname_list.index('phi')
         i_w = self.varname_list.index('vorticity')
-                
+        i_density = self.varname_list.index('density')
         phi = x[i_phi]
-        
-        drplt.source_1d(dxdt[i_phi], phi, self.dx, xi, M)
-        drplt.torque(dxdt[i_w], phi, self.dx, rho_l, rho_h, xi, sigma, gravity = g)        
-        drplt.anti_diffusion(phi)
-        drplt.viscosity(dxdt[i_w], x[i_w], self.dx, phi, nu_l = 15*10**-6, nu_h = 10**-4)            
+        density = x[i_density]
+
+        #drplt.source_1d(dxdt[i_phi], phi, self.dx, xi, M)
+        drplt.torque(dxdt[i_w], phi, density, self.dx, rho_l,
+                     rho_h, rho_0, xi, sigma, gravity=g)
+        drplt.restrict_phi(phi)
+        #drplt.anti_diffusion(phi, 3)
+        #drplt.viscosity(dxdt[i_w], x[i_w], self.dx, phi,
+        #                nu_l=nu_l, nu_h=nu_h)
         #self.fill_halo(phi)
 
-    
     def diffx(self, x):
         nh = self.nh
         if self.i0 == self.npx-1:
@@ -393,7 +396,7 @@ class Operators(Param):
         # dw[1:-1, 1:-1] -= self.coefV[1:-1, 1:-1]*self.diffz(V)*self.f0
         # dw[:, :nh+1] = 0
         # dw[:, -nh-1:] = 0
-        y *= self.msk        
+        y *= self.msk
         self.fill_halo(y)
         dw[:, :] += y
 
@@ -426,7 +429,7 @@ class Operators(Param):
         psi = x[ip]
 
         fo.celltocorner(x[iw], self.work)
-        #fo.celltocornerbicubic(x[iw], self.work)
+        # fo.celltocornerbicubic(x[iw], self.work)
         if island:
             # correcting RHS for islands
             self.work[:, :] -= self.rhsp
@@ -441,7 +444,7 @@ class Operators(Param):
             #                           {'maxite': 2,
             #                            'tol': 1e-8,
             #                            'verbose': False})
-            
+
         else:
             # compute to machine accuracy
             if self.first_time:
@@ -463,7 +466,6 @@ class Operators(Param):
                 # make sure psi has zero mean (to avoid the drift)
                 psim = self.domain_integration(psi) / self.area
                 psi -= psim
-        
 
         # don't apply the fill_halo on it
         # [because fill_halo, as it is, is applying periodic BC]
@@ -476,9 +478,8 @@ class Operators(Param):
             # it should be added only if we invert for the total psi
             # it should not be added if we compute the increment of psi
 
-
         self.first_time = False
-            
+
         # compute (u,v) @ U,V points from psi @ cell corner
         fo.computeorthogradient(self.msk, psi, self.dx, self.dy, self.nh, u, v)
         # self.fill_halo(u)

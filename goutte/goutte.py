@@ -4,15 +4,16 @@ from grid import Grid
 from fluid2d import Fluid2d
 import numpy as np
 import matplotlib.pyplot as plt
-
+import droplet_operator_simple as dos
+import droplet_operator as do
 
 param = Param('default.xml')
 param.modelname = 'droplet'
-param.expname = 'drop_diag'
+param.expname = 'test__r8_sigm0-5'
 
 # domain and resolution
 ratio = 1
-param.ny = 2**7
+param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -21,15 +22,15 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 0.2
-param.cfl = 1.5
+param.tend = 0.5
+param.cfl = 0.8
 param.adaptable_dt = True
-param.dt = 0.001
+param.dt = 0.0001
 param.dtmax = 0.01
 
 # discretization
 param.order = 5
-param.timestepping = 'RK4_LS'
+param.timestepping = 'RK3_SSP'
 
 # output
 param.var_to_save = ['phi', "u", "v", "vorticity"]
@@ -42,9 +43,9 @@ param.freq_diag = .1
 param.plot_interactive = True
 param.plot_var = 'phi'
 param.cax = [0., 1.]
-param.colorscheme = 'imposed'
+param.colorscheme = 'minmax'
 param.generate_mp4 = True
-param.cmap = 'viridis'
+param.cmap = 'inferno'
 
 # physics
 param.forcing = False
@@ -53,11 +54,14 @@ param.diffusion = False
 param.forcing = False
 
 # rho, sigma and M
-param.rho_h = 1000.
+param.rho_h = 10.
+param.rho_0 = 1.0697104958040833
 param.rho_l = 1.
-param.M = 0.
-param.sigma = 5.
-param.gravity = 1.
+param.M = 0.0
+param.sigma = 0.5
+param.gravity = 10.
+param.nu_h = 10**-6
+param.nu_l = 0.
 
 nh = param.nh
 
@@ -68,7 +72,7 @@ f2d = Fluid2d(param, grid)
 model = f2d.model
 
 
-def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 200):
+def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness=200):
     """ Create a droplet of high density liquid """
     xr, yr = grid.xr, grid.yr
     # ratio controls the ellipticity, ratio=1 is a disc
@@ -76,17 +80,17 @@ def add_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 200):
 
     y = np.abs(1-np.tanh((r-sigma)*sharpness))
     y /= np.amax(y)
-    phi[phi<y] = y[phi<y]
+    phi[phi < y] = y[phi < y]
 
-def del_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness = 200):
+
+def del_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness=200):
     """ Create a bubble of low density liquid"""
     xr, yr = grid.xr, grid.yr
     # ratio controls the ellipticity, ratio=1 is a disc
     r = np.sqrt((xr-param.Lx*x0)**2+(yr-param.Ly*y0)**2*ratio**2)
 
     y = np.abs(1+np.tanh((r-sigma)*sharpness))/2
-    phi[phi>y] = y[phi>y]
-
+    phi[phi > y] = y[phi > y]
 
 
 vor = model.var.get('vorticity')
@@ -95,51 +99,65 @@ vor[:, :] = 0.
 
 
 # =============================================================================
-# Distribution of high density liquid 
+# Distribution of high density liquid
 # =============================================================================
 
-phi[:,:] = 0.
+phi[:, :] = 0.
 
 # High density fluid at the bottom:
 #phi[:,:]= np.abs(1-np.tanh(((grid.yr)-param.Ly*0.1)*200))/2
 
 # Droplets:
-add_phi(phi, param, grid, 0.5, 0.8, 0.05, sharpness=200)
+add_phi(phi, param, grid, 0.5, 0.7, 0.05, sharpness=100)
+
+
+
+def mean_rho(phi, rho_l, rho_h):
+    average_phi = np.sum(phi)/(np.shape(phi)[0]*np.shape(phi)[1])
+    return average_phi*rho_h + (1-average_phi)*rho_l 
+ 
+param.rho_0 = mean_rho(phi, param.rho_l, param.rho_h)
+print(param.rho_0)
+
 
 # =============================================================================
 # In order to check the look of the initial conditions.
 # =============================================================================
 
 
-#dx = param.Ly/param.ny
-#grad_i, grad_j = gradient(phi, dx)
-#n_i, n_j = normalise( grad_i, grad_j)
-#grad = np.sqrt(grad_i**2 + grad_j**2)
+"""dx = param.Ly/param.ny
+grad_i, grad_j = dos.gradient_i(phi, dx), dos.gradient_j(phi, dx)
+n_i, n_j = do.normalise(grad_i, grad_j)
+grad = np.sqrt(grad_i**2 + grad_j**2)"""
 
-#computing the torque:
+# computing the torque:
 #trq = np.zeros_like(phi)
 #torque(trq, phi, dx, rho_l = 1, rho_h = 10, xi = 5*dx, sigma = 0.01)
 
-#plt.figure(figsize = (8,8))
+"""plt.figure(figsize=(8, 8))"""
 
 # Check phi:
-#plt.pcolormesh(grid.xr, grid.yr, phi, shading = 'nearest')
-#plt.colorbar()
+"""plt.pcolormesh(grid.xr, grid.yr, grad**5, shading='nearest')"""
+# plt.colorbar()
 
-#Check the torque:
+# Check the torque:
 #plt.pcolormesh(grid.xr, grid.yr, trq, shading = 'nearest')
 
 # Check the source term in equation (1d) :
 #plt.pcolormesh(grid.xr, grid.yr, source_1d(phi, dx, xi = 3*dx, M = 0.01), shading = 'nearest')
 
 
-#Check the gradient:
-#grad_i[grad<30] = 0
-#grad_j[grad<30] = 0
-#plt.quiver(grid.xr, grid.yr, -grad_j, -grad_i, scale = 500, minlength = 0)
+# Check the gradient:
+"""grad_i[grad < 40] = 0
+grad_j[grad < 40] = 0"""
+#plt.quiver(grid.xr, grid.yr, -grad_j, -grad_i, scale=500, minlength=0)
 
 
 model.set_psi_from_vorticity()
 
 f2d.loop()
 
+# Check phi:
+#plt.figure(figsize=(12, 10))
+#plt.pcolormesh(grid.xr, grid.yr, phi, cmap='inferno', shading='gouraud')
+# plt.colorbar()
