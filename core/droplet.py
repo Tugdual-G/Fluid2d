@@ -30,8 +30,8 @@ class Droplet(object):
 
         # for variables
         param.varname_list = ['vorticity',
-                              'psi', 'u', 'v', 'density', 'phi']
-        param.tracer_list = ['vorticity', 'phi']
+                              'psi', 'u', 'v', 'density', 'phi', 'tracer']
+        param.tracer_list = ['vorticity', 'phi', 'tracer']
         param.whosetspsi = ('vorticity')
 
         if hasattr(self, 'additional_tracer'):

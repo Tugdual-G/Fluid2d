@@ -339,8 +339,8 @@ class Operators(Param):
                      rho_h, rho_0, xi, sigma, gravity=g)
         drplt.restrict_phi(phi)
         #drplt.anti_diffusion(phi, 3)
-        #drplt.viscosity(dxdt[i_w], x[i_w], self.dx, phi,
-        #                nu_l=nu_l, nu_h=nu_h)
+        drplt.viscosity(dxdt[i_w], x[i_w], self.dx, phi,
+                        nu_l=nu_l, nu_h=nu_h)
         #self.fill_halo(phi)
 
     def diffx(self, x):

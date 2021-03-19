@@ -6,14 +6,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import droplet_operator_simple as dos
 import droplet_operator as do
+from random import uniform 
+
 
 param = Param('default.xml')
 param.modelname = 'droplet'
-param.expname = 'test'
+param.expname = 'drop_lines_visco'
 
 # domain and resolution
 ratio = 1
-param.ny = 2**9
+param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -22,7 +24,7 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 0.5
+param.tend = 0.4
 param.cfl = 0.8
 param.adaptable_dt = True
 param.dt = 0.0001
@@ -33,7 +35,7 @@ param.order = 5
 param.timestepping = 'RK3_SSP'
 
 # output
-param.var_to_save = ['phi', "u", "v", "vorticity"]
+param.var_to_save = ['phi', "u", "v", "vorticity", "tracer"]
 param.list_diag = 'all'
 param.freq_plot = 5
 param.freq_his = .005
@@ -41,9 +43,9 @@ param.freq_diag = .1
 
 # plot
 param.plot_interactive = True
-param.plot_var = 'phi'
+param.plot_var = 'tracer'
 param.cax = [0., 1.]
-param.colorscheme = 'minmax'
+param.colorscheme = 'imposed'
 param.generate_mp4 = True
 param.cmap = 'inferno'
 
@@ -54,12 +56,12 @@ param.diffusion = False
 param.forcing = False
 
 # rho, sigma and M
-param.rho_h = 10.
+param.rho_h = 5.
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 0.5
+param.sigma = 0.8
 param.gravity = 10.
-param.nu_h = 10**-6
+param.nu_h = 10**-3
 param.nu_l = 0.
 
 nh = param.nh
@@ -104,7 +106,7 @@ phi0 = np.zeros((param.ny+6, param.nx+6))
 #phi[:,:]= np.abs(1-np.tanh(((grid.yr)-param.Ly*0.1)*200))/2
 
 # Droplets:
-add_phi(phi0, param, grid, 0.5, 0.7, 0.05, sharpness=100)
+add_phi(phi0, param, grid, 0.5, 0.8, 0.05, sharpness=100)
 
 
 
@@ -118,10 +120,22 @@ param.rho_0 = mean_rho(phi0, param.rho_l, param.rho_h)
 f2d = Fluid2d(param, grid)
 model = f2d.model
 
+tracer = model.var.get('tracer')
 vor = model.var.get('vorticity')
 phi = model.var.get('phi')
 vor[:, :] = 0.
 phi[:, :] = phi0
+
+x = np.arange(0, np.shape(tracer)[0], 1)
+X , Y = np.meshgrid(x,x)
+ 
+
+#tracer[:,:] = np.random.random(tracer.shape)**8
+
+tracer[:,:] = 0.5*np.cos((grid.xr-0.5)*200)**3*np.cos((grid.xr-0.5)*3)**4
+
+add_phi(tracer, param, grid, 0.5, 0.8, 0.05, sharpness=100)
+
 # =============================================================================
 # In order to check the look of the initial conditions.
 # =============================================================================
