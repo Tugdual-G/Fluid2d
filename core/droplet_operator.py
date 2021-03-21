@@ -183,7 +183,12 @@ def restrict_phi(phi):
 def viscosity(dxdt, w, dx, phi, nu_l=15*10**-6, nu_h=10**-3):
     dxdt += laplacian(w, dx)*((1-phi)*nu_l + phi*nu_h)
 
-
+@jit(nopython=True, parallel=True, cache=True)
+def taming_viscosity(dxdt, w, dx, nu = 10**-3):
+    max_w = np.amax(np.abs(w)) 
+    if max_w > 10000:
+        trigger = (w/max_w)**8
+        dxdt += laplacian(w, dx)*nu*trigger
 
 @jit(nopython=True, parallel=True, cache=True)
 def anti_diffusion(phi, nc=2):
@@ -202,4 +207,4 @@ def anti_diffusion(phi, nc=2):
                         phi[i, j] = 0
 
 
-    
+

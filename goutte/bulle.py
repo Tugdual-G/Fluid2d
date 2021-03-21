@@ -12,7 +12,7 @@ from random import uniform
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'test'
+param.expname = 'b_ro1000_sig40_q8_xi3'
 
 # domain and resolution
 ratio = 1
@@ -57,10 +57,10 @@ param.diffusion = False
 param.forcing = False
 
 # rho, sigma and M
-param.rho_h = 5.
+param.rho_h = 1000.
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 0.4
+param.sigma = 40
 param.gravity = 10.
 param.nu_h = 0.
 param.nu_l = 0.
@@ -69,6 +69,7 @@ param.n_xi = 3.
 nh = param.nh
 
 grid = Grid(param)
+
 
 
 
@@ -105,12 +106,12 @@ phi0 = np.zeros((param.ny+6, param.nx+6))
 
 # High density fluid at the bottom:
 #phi0[:,:]= np.abs(1-np.tanh(((grid.yr)-param.Ly*0.5)*200))/2
-
+phi0[:,:] = 1
 
 # Droplets:
-add_phi(phi0, param, grid, 0.5, 0.85, 0.05, sharpness=100)
+#add_phi(phi0, param, grid, 0.5, 0.85, 0.05, sharpness=100)
 
-
+del_phi(phi0, param, grid, 0.5, 0.15, 0.05, sharpness=100)
 
 def mean_rho(phi, rho_l, rho_h):
     return np.mean(phi)*rho_h + (1-np.mean(phi))*rho_l 
@@ -131,13 +132,11 @@ x = np.arange(0, np.shape(tracer)[0], 1)
 X , Y = np.meshgrid(x,x)
  
 
-# =============================================================================
-#  Set tracer
-# =============================================================================
+#tracer[:,:] = np.random.random(tracer.shape)**8
 
 tracer[:,:] = 0.5*np.cos((grid.xr-0.5)*200)**3*np.cos((grid.xr-0.5)*3)**4
 
-add_phi(tracer, param, grid, 0.5, 0.85, 0.05, sharpness=100)
+add_phi(tracer, param, grid, 0.5, 0.15, 0.05, sharpness=100)
 
 # =============================================================================
 # In order to check the look of the initial conditions.
@@ -171,12 +170,12 @@ grad_j[grad < 40] = 0
 plt.quiver(grid.xr, grid.yr, -grad_j, -grad_i, scale=500, minlength=0)
 """
 
-# =============================================================================
-# Start
-# =============================================================================
-
 model.set_psi_from_vorticity()
 
 f2d.loop()
 
+# Check phi:
+#plt.figure(figsize=(12, 10))
+#plt.pcolormesh(grid.xr, grid.yr, phi, cmap='inferno', shading='gouraud')
+# plt.colorbar()
 
