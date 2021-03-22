@@ -10,7 +10,8 @@
 \section{Modèle de base}
 
 
-Navier Stokes :
+\paragraph{Navier Stokes }
+
 \begin{equation}
 	\rho \dfrac{D \vec{u}}{D t} = - \nabla p + \mu \nabla^2 \vec{u} + \vec{F}
 \end{equation}
@@ -24,7 +25,8 @@ Avec :
 	\eta = 12 \dfrac{\sigma}{\xi} \quad \quad \quad \kappa = \dfrac{3}{2} \sigma \xi \quad \quad \quad \xi = 3 dx
 \]
 
-Bousinessq :
+\paragraph{Bousinessq}
+
 \begin{equation}
 	\underbrace{\dfrac{\rho}{\rho_0}}_{\simeq 1} \dfrac{D u}{D t} = \dfrac{-1}{\rho_0} \nabla p + \dfrac{\mu }{\rho_0} \nabla^2 \vec{u} + \dfrac{\vec{F}}{\rho_0}
 \end{equation}
@@ -44,7 +46,8 @@ Ajout de la tension :
 	\dfrac{D\omega}{D t} = \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} + \dfrac{1}{\rho_0} \nabla \times \overbrace{[\quad]}^{Tension}
 \]
 
-Notre modèle sans viscosité :
+\paragraph{Notre modèle sans viscosité }
+
 \[
 	\dfrac{D \vec{\omega}}{D t} = \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} + \dfrac{1}{\rho_0} \nabla \times \left( \left[ 4 \eta \phi (\phi_1) \left(\phi - \dfrac{1}{2}\right) - \kappa \nabla^2 \phi \right] \nabla \phi \right)
 \]
