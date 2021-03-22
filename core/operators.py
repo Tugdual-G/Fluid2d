@@ -4,7 +4,7 @@ from gmg.hierarchy import Gmg
 import fortran_advection as fa
 import fortran_operators as fo
 import fortran_diag as fd
-import droplet_operator as drplt
+import droplet_operator_lapla_diago as drplt
 
 
 class Operators(Param):

@@ -97,7 +97,7 @@ def laplacian_diago(x, dx):
             lplc_d[i, j] = (x[i-1, j-1] + x[i+1, j+1] + x[i+1, j-1] +
                           x[i-1, j+1]-4*x[i, j])/(2*dx**2)
     
-    max_lplc = np.amax(np.abs(lplc[1:-1,1:-1]))
+    #max_lplc = np.amax(np.abs(lplc[1:-1,1:-1]))
     
     #lplc[1:-1,1:-1] = lplc[1:-1,1:-1]*(1-np.abs(lplc[1:-1,1:-1])/max_lplc)+lplc_d[1:-1,1:-1]*np.abs(lplc[1:-1,1:-1])/max_lplc
     lplc[1:-1,1:-1] = lplc[1:-1,1:-1]*0.5+lplc_d[1:-1,1:-1]*0.5   
@@ -218,8 +218,6 @@ def restrict_phi(phi):
 @jit(nopython=True, parallel=True, cache=True)
 def viscosity(dxdt, w, dx, phi, nu_l=15*10**-6, nu_h=10**-3):
     dxdt += laplacian(w, dx)*((1-phi)*nu_l + phi*nu_h)
-
-
 
 
 def surface_tension(phi, dx, xi, sigma, gravity=10):
