@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.1.18)  22 MAR 2021 21:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.1.18)  22 MAR 2021 21:41
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -136,10 +136,10 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] (./Journal.aux) ) 
 Here is how much of TeX's memory you used:
- 1554 strings out of 481239
- 19537 string characters out of 5920377
+ 1555 strings out of 481239
+ 19545 string characters out of 5920377
  254961 words of memory out of 5000000
- 16857 multiletter control sequences out of 15000+600000
+ 16858 multiletter control sequences out of 15000+600000
  534950 words of font info for 35 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  30i,11n,27p,263b,111s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -153,7 +153,7 @@ t/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts
 public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmsy7.pfb>
-Output written on Journal.pdf (2 pages, 98848 bytes).
+Output written on Journal.pdf (2 pages, 99581 bytes).
 PDF statistics:
  47 PDF objects out of 1000 (max. 8388607)
  33 compressed objects within 1 object stream

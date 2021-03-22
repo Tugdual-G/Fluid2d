@@ -67,18 +67,20 @@ Les gradients seront presque alignés, car il y a surpression dans la bulle ou l
 \section{Autres modèles possibles}
 
 
-Tension de surface $\vec{F_{\sigma}}$ :
 
+Courbure:
 \[ \kappa = - \nabla \cdot \left( \frac{\nabla\phi}{\left\| \nabla \phi \right\|} \right) \] 
 
+Tension de surface $\vec{F_{\sigma}}$ :
 \[ \vec{F_{\sigma}}= - \frac{\sigma}{\rho} \kappa \nabla \phi \]
 
 Torque:
 \[ \nabla \times \vec{F_{\sigma}} = - \sigma\nabla\left( \frac{\kappa}{\rho}\right)\times \nabla \phi \]
 
+? On développe au cas où l'on trouve une simplification de $\nabla(\kappa)$ ?:
 \[ =-\sigma \left[ \nabla\left( \frac{1}{\rho}\right)\kappa + \frac{1}{\rho} \nabla(\kappa) \right]\times \nabla\phi \]
 
-Viscosité:
+Rotationnel de la viscosité si l'on décide d'en ajouter:
 \[
 \nabla\times (\mu/\rho_0\cdot\nabla^2\vec{u}) = 1/\rho_0 \cdot \left[ \nabla(\mu) \times \nabla^2\vec{u} + \mu \nabla^2\omega \right]
 \]
