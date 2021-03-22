@@ -9,7 +9,8 @@
                 "boussinesq",
                 "boussinesqTS",
                 "quasigeostrophic",
-                "thermalwind"
+                "thermalwind",
+                "droplet"
             ],
             "doc": "Type of model equations"
         },
