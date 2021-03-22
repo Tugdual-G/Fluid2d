@@ -1,0 +1,85 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\author{Malo Kerebel}
+\usepackage{cancel}
+\begin{document}
+
+\section{Modèle de base}
+
+
+Navier Stokes :
+\begin{equation}
+	\rho \dfrac{D \vec{u}}{D t} = - \nabla p + \mu \nabla^2 \vec{u} + \vec{F}
+\end{equation}
+
+Modèle tension de surface :
+\begin{equation}
+	\vec{F} = \rho \vec{g} + \overbrace{\left[ 4 \eta \phi (\phi - 1) \left(phi - \dfrac{1}{2} \right) - k\nabla^2 \phi \right] \nabla \phi}^{Tension}
+\end{equation}
+Avec :
+\[
+	\eta = 12 \dfrac{\sigma}{\xi} \quad \quad \quad \kappa = \dfrac{3}{2} \sigma \xi \quad \quad \quad \xi = 3 dx
+\]
+
+Bousinessq :
+\begin{equation}
+	\underbrace{\dfrac{\rho}{\rho_0}}_{\simeq 1} \dfrac{D u}{D t} = \dfrac{-1}{\rho_0} \nabla p + \dfrac{\mu }{\rho_0} \nabla^2 \vec{u} + \dfrac{\vec{F}}{\rho_0}
+\end{equation}
+
+Ajout de la tension :
+\[
+	-\nabla p + \vec{F} = - \nabla (p + \rho_0 \psi) + \delta \rho \vec{g} +  \overbrace{[\quad]}^{Tension}
+\]
+
+Équation de la vorticité sans viscosité :
+
+\[
+	\nabla \times (3) \Rightarrow \dfrac{D\omega}{D t} =  \dfrac{1}{\rho_0} \nabla \times \left( \delta \rho \vec{g} + \overbrace{[\quad]}^{Tension}\right)
+\]
+
+\[
+	\dfrac{D\omega}{D t} = \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} + \dfrac{1}{\rho_0} \nabla \times \overbrace{[\quad]}^{Tension}
+\]
+
+Notre modèle sans viscosité :
+\[
+	\dfrac{D \vec{\omega}}{D t} = \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} + \dfrac{1}{\rho_0} \nabla \times \left( \left[ 4 \eta \phi (\phi_1) \left(\phi - \dfrac{1}{2}\right) - \kappa \nabla^2 \phi \right] \nabla \phi \right)
+\]
+
+Simplification de  due à la 2d: 
+
+\[  \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} = \partial_x (\delta \rho) \cdot g~\vec{e}_z \]
+
+
+Donc, ce que l'on intègre en temps :
+\[
+	\dfrac{D \vec{\omega}}{D t} = \dfrac{1}{\rho_0} \partial_x (\delta \rho ) \cdot g ~\vec{e_z} + \dfrac{1}{\rho_0} \nabla \times \left( \left[ 4 \eta \phi (\phi - 1) \left(\phi - \dfrac{1}{2} \right) - k\nabla^2 \phi \right] \nabla \phi\right)
+\]
+
+\paragraph{Pourquoi l'approximation Boussinesq peut-elle fonctionner:}
+Terme de pression dans l'équation de base de la vorticité:
+\[ -\nabla \times \left( \frac{1}{\rho} \nabla p \right) = -\nabla \left( \frac{1}{\rho} \right) \times \nabla p \] 
+Les gradients seront presque alignés, car il y a surpression dans la bulle ou la goutte, donc le produit vectoriel est négligeable.
+
+\section{Autres modèles possibles}
+
+
+Tension de surface $\vec{F_{\sigma}}$ :
+
+\[ \kappa = - \nabla \cdot \left( \frac{\nabla\phi}{\left\| \nabla \phi \right\|} \right) \] 
+
+\[ \vec{F_{\sigma}}= - \frac{\sigma}{\rho} \kappa \nabla \phi \]
+
+Torque:
+\[ \nabla \times \vec{F_{\sigma}} = - \sigma\nabla\left( \frac{\kappa}{\rho}\right)\times \nabla \phi \]
+
+\[ =-\sigma \left[ \nabla\left( \frac{1}{\rho}\right)\kappa + \frac{1}{\rho} \nabla(\kappa) \right]\times \nabla\phi \]
+
+Viscosité:
+\[
+\nabla\times (\mu/\rho_0\cdot\nabla^2\vec{u}) = 1/\rho_0 \cdot \left[ \nabla(\mu) \times \nabla^2\vec{u} + \mu \nabla^2\omega \right]
+\]
+\end{document}
