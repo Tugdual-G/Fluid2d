@@ -9,15 +9,11 @@ from numba import jit, prange
 
 @jit(nopython=True, parallel=True, cache=True)
 def gradient_i(phi, dx):
-    """Compute the gradient of phi with differents approches: in directions i,
-    j and along the diagonals.
-    The returned gradient is averaged between the two methods.
-    A second averaging is done with adjacent cells."""
+    """Compute the gradient of phi in vertical direction
+    (i direction in matrix notation)"""
 
-    # Creating gradients arrays:
     grad_i = np.zeros_like(phi, dtype=np.float32)
 
-    # Computing the gradient in direction i(vertical) and j(horizontal):
     m, n = np.shape(phi)
     for i in prange(1, m-1):
         # Boudaries:
@@ -33,15 +29,11 @@ def gradient_i(phi, dx):
 
 @jit(nopython=True, parallel=True, cache=True)
 def gradient_j(phi, dx):
-    """Compute the gradient of phi with differents approches: in directions i,
-    j and along the diagonals.
-    The returned gradient is averaged between the two methods.
-    A second averaging is done with adjacent cells."""
+    """Compute the gradient of phi in horizontal direction
+    (j direction in matrix notation)"""
 
-    # Creating gradients arrays:
     grad_j = np.zeros_like(phi, dtype=np.float32)
 
-    # Computing the gradient in direction i(vertical) and j(horizontal):
     m, n = np.shape(phi)
     for i in prange(1, m-1):
         # Boudaries:
@@ -97,7 +89,7 @@ def laplacian_diago(x, dx):
             lplc_d[i, j] = (x[i-1, j-1] + x[i+1, j+1] + x[i+1, j-1] +
                           x[i-1, j+1]-4*x[i, j])/(2*dx**2)
     
-    max_lplc = np.amax(np.abs(lplc[1:-1,1:-1]))
+    #max_lplc = np.amax(np.abs(lplc[1:-1,1:-1]))
     
     #lplc[1:-1,1:-1] = lplc[1:-1,1:-1]*(1-np.abs(lplc[1:-1,1:-1])/max_lplc)+lplc_d[1:-1,1:-1]*np.abs(lplc[1:-1,1:-1])/max_lplc
     lplc[1:-1,1:-1] = lplc[1:-1,1:-1]*0.5+lplc_d[1:-1,1:-1]*0.5   
@@ -177,8 +169,7 @@ def curl(x_i, x_j, dx):
 
 @jit(nopython=True, parallel=True, cache=True)
 def source_1d(dxdt, phi, dx, xi, M):
-    """return the source term in the 1d equation, 
-    conservation of mass, using phi"""
+    """return the source term corresponding to difusion in phi advection equation"""
 
     grd_phi_i, grd_phi_j = gradient_i(phi, dx), gradient_j(phi, dx)
 
@@ -189,11 +180,10 @@ def source_1d(dxdt, phi, dx, xi, M):
 
 
 @jit(nopython=True, parallel=True, cache=True)
-def torque(dxdt, phi, density, dx, rho_l, rho_h, rho_0, xi, sigma, gravity=10):
+def torque(dxdt, phi, dx, rho_l, rho_h, rho_0, xi, sigma, gravity=10):
     """Return the torque term in vorticity equation"""
     kappa = 3/2*sigma*xi
     eta = 12*sigma/xi
-    density[:, :] = ((1-phi)*rho_l + phi*rho_h)
 
     F_i = (4*eta*phi*(phi-1)*(phi-1/2) - kappa *
            laplacian_diago(phi, dx))*gradient_i(phi, dx)
@@ -201,7 +191,8 @@ def torque(dxdt, phi, density, dx, rho_l, rho_h, rho_0, xi, sigma, gravity=10):
     F_j = (4*eta*phi*(phi-1)*(phi-1/2)-kappa *
            laplacian_diago(phi, dx))*gradient_j(phi, dx)
 
-    dxdt += (gradient_j(density, dx)*gravity + curl(F_i, F_j, dx))/rho_0
+    dxdt += (-gradient_i(((1-phi)*rho_l + phi*rho_h)-rho_0, dx)*gravity +\
+             curl(F_i, F_j, dx))/rho_0
 
 
 @jit(nopython=True, parallel=True, cache=True)
@@ -220,9 +211,8 @@ def viscosity(dxdt, w, dx, phi, nu_l=15*10**-6, nu_h=10**-3):
     dxdt += laplacian(w, dx)*((1-phi)*nu_l + phi*nu_h)
 
 
-
-
 def surface_tension(phi, dx, xi, sigma, gravity=10):
+    """ just to check the look of the tension"""
     kappa = 3/2*sigma*xi
     eta = 12*sigma/xi
 

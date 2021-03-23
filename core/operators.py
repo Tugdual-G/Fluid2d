@@ -4,7 +4,7 @@ from gmg.hierarchy import Gmg
 import fortran_advection as fa
 import fortran_operators as fo
 import fortran_diag as fd
-import droplet_operator as drplt
+import droplet_operator_lapla_diago as drplt
 
 
 class Operators(Param):
@@ -330,16 +330,12 @@ class Operators(Param):
 
         i_phi = self.varname_list.index('phi')
         i_w = self.varname_list.index('vorticity')
-        i_density = self.varname_list.index('density')
-        phi = x[i_phi]
-        density = x[i_density]
 
         #drplt.source_1d(dxdt[i_phi], phi, self.dx, xi, M)
-        drplt.torque(dxdt[i_w], phi, density, self.dx, rho_l,
+        drplt.torque(dxdt[i_w], x[i_phi], self.dx, rho_l,
                      rho_h, rho_0, xi, sigma, gravity=g)
-        drplt.restrict_phi(phi)
-        #drplt.anti_diffusion(phi, 3)
-        #drplt.taming_viscosity(dxdt[i_w], x[i_w], x[i_phi], self.dx, nu = 10**-4)
+        drplt.restrict_phi(x[i_phi])
+
         #drplt.viscosity(dxdt[i_w], x[i_w], self.dx, phi,
         #                nu_l=nu_l, nu_h=nu_h)
         #self.fill_halo(phi)

@@ -3,16 +3,13 @@ from param import Param
 from grid import Grid
 from fluid2d import Fluid2d
 import numpy as np
-import matplotlib.pyplot as plt
-import droplet_operator_lapla_diago as dold
-import droplet_operator as do
-from random import uniform 
+
 
 
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'couloir'
+param.expname = 'test'
 
 # domain and resolution
 ratio = 2
@@ -61,7 +58,7 @@ param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
 param.sigma = 1.
-param.gravity = 10.
+param.gravity = -10
 param.nu_h = 0.
 param.nu_l = 0.
 param.n_xi = 3.
@@ -94,21 +91,26 @@ def del_phi(phi, param, grid, x0, y0, sigma, ratio=1, sharpness=200):
     phi[phi > y] = y[phi > y]
 
 
+
+
+
+# =============================================================================
+# Settting a distribution of high density liquid
+# =============================================================================
+
 phi0 = np.zeros((param.ny+6, param.nx+6))
-
-
-# =============================================================================
-# Distribution of high density liquid
-# =============================================================================
-
-
 
 # High density fluid at the bottom:
 #phi0[:,:] = np.abs(1-np.tanh(((grid.yr)-param.Ly*0.5)*200))/2
 #phi0[:,:] += -np.abs(1-np.tanh(((grid.yr)-param.Ly*0.4)*200))/2
 
 # Droplets:
-add_phi(phi0, param, grid, 0.5, 0.7, 0.05, sharpness=100)
+radius = 0.1
+x_drop = 0.10
+y_drop = 0.5
+shrpn = 100
+
+add_phi(phi0, param, grid, x_drop, y_drop, radius, sharpness=shrpn)
 
 
 def mean_rho(phi, rho_l, rho_h):
@@ -134,33 +136,9 @@ X , Y = np.meshgrid(x,x)
 #  Set tracer
 # =============================================================================
 
-tracer[:,:] = 0.5*np.cos((grid.xr-0.5)*200)**3*np.cos((grid.xr-0.5)*3)**4
+tracer[:,:] = 0.5*np.cos((grid.yr-0.5)*150)**3*np.cos((grid.yr-0.5)*3)**4
 
-add_phi(tracer, param, grid, 0.5, 0.7, 0.05, sharpness=100)
-
-# =============================================================================
-# In order to check the look of the initial conditions.
-# =============================================================================
-
-
-"""dx = param.Ly/param.ny
-
-F_i, F_j = do.surface_tension(phi, dx, param.n_xi, param.sigma)
-
-
-fig , ax = plt.subplots(1,2, figsize=(20, 10),num ='test', clear = True)
-
-
-ax[0].pcolormesh(grid.xr, grid.yr, F_i**6+F_j**6, shading='nearest')
-
-
-F_i, F_j = dold.surface_tension(phi, dx, param.n_xi, param.sigma)
-
-
-ax[1].pcolormesh(grid.xr, grid.yr, F_i**6+F_j**6, shading='nearest')
-
-
-#ax.quiver(grid.xr, grid.yr, F_j, F_i, minlength=0)"""
+add_phi(tracer, param, grid, x_drop, y_drop, radius, sharpness=shrpn)
 
 
 # =============================================================================
