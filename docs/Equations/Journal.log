@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.1.18)  22 MAR 2021 21:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.1.18)  23 MAR 2021 07:50
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -132,7 +132,13 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 15.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1
+)
+Overfull \hbox (20.54112pt too wide) in paragraph at lines 71--73
+[]\OT1/cmr/bx/n/10 Cependant ci c'^^Setait vrai-ment le cas la goutte ou la bul
+le ne bougeraient
+ []
+
+[1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] (./Journal.aux) ) 
 Here is how much of TeX's memory you used:
@@ -142,7 +148,7 @@ Here is how much of TeX's memory you used:
  16858 multiletter control sequences out of 15000+600000
  534950 words of font info for 35 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 30i,11n,27p,263b,111s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 30i,11n,27p,263b,101s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texli
@@ -153,7 +159,7 @@ t/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts
 public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmsy7.pfb>
-Output written on Journal.pdf (2 pages, 100176 bytes).
+Output written on Journal.pdf (2 pages, 101631 bytes).
 PDF statistics:
  47 PDF objects out of 1000 (max. 8388607)
  33 compressed objects within 1 object stream

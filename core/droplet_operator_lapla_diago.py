@@ -223,3 +223,7 @@ def surface_tension(phi, dx, xi, sigma, gravity=10):
            laplacian(phi, dx))*gradient_j(phi, dx)
 
     return F_i, F_j
+
+@jit(nopython=True, parallel=True, cache=True)
+def smooth_start(dxdt, t, w, dx, nu_l=10**-2, alpha = 5):    
+    dxdt += laplacian(w, dx)*nu_l*np.exp(-t*alpha)

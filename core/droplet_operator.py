@@ -187,8 +187,8 @@ def restrict_phi(phi):
 
 
 @jit(nopython=True, parallel=True, cache=True)
-def viscosity(dxdt, w, dx, phi, nu_l=15*10**-6, nu_h=10**-3):
-    dxdt += laplacian(w, dx)*((1-phi)*nu_l + phi*nu_h)
+def smooth_start(dxdt, t, w, dx, nu_l=10**-2, alpha = 5):    
+    dxdt += laplacian(w, dx)*nu_l*np.exp(-t*alpha)
 
 
 
