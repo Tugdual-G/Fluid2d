@@ -169,7 +169,7 @@ def curl(x_i, x_j, dx):
 
 @jit(nopython=True, parallel=True, cache=True)
 def source_1d(dxdt, phi, dx, xi, M):
-    """return the source term corresponding to difusion in phi advection equation"""
+    """Return the source term corresponding to difusion in phi advection equation."""
 
     grd_phi_i, grd_phi_j = gradient_i(phi, dx), gradient_j(phi, dx)
 
@@ -207,23 +207,6 @@ def restrict_phi(phi):
 
 
 @jit(nopython=True, parallel=True, cache=True)
-def viscosity(dxdt, w, dx, phi, nu_l=15*10**-6, nu_h=10**-3):
-    dxdt += laplacian(w, dx)*((1-phi)*nu_l + phi*nu_h)
-
-
-def surface_tension(phi, dx, xi, sigma, gravity=10):
-    """ just to check the look of the tension"""
-    kappa = 3/2*sigma*xi
-    eta = 12*sigma/xi
-
-    F_i = (4*eta*phi*(phi-1)*(phi-1/2) - kappa *
-           laplacian(phi, dx))*gradient_i(phi, dx)
-
-    F_j = (4*eta*phi*(phi-1)*(phi-1/2)-kappa *
-           laplacian(phi, dx))*gradient_j(phi, dx)
-
-    return F_i, F_j
-
-@jit(nopython=True, parallel=True, cache=True)
-def smooth_start(dxdt, t, w, dx, nu_l=10**-2, alpha = 5):    
-    dxdt += laplacian(w, dx)*nu_l*np.exp(-t*alpha)
+def smooth_start(dxdt, t, w, dx, nu_l=10**-2, sigma = 0.1):
+    """ In order to reduce oscillations at the begining of the simulation """
+    dxdt += laplacian(w, dx)*nu_l*np.exp(-(t/sigma)**2)

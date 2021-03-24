@@ -9,11 +9,11 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'smooth_start_q8-tracerlarge_lapladiago'
+param.expname = 'smooth_start_q8-tracerlarge_lapladiago_ordr3'
 
 # domain and resolution
 ratio = 2
-param.ny = 2**7
+param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 4.
+param.sigma = 1.
 param.gravity = -10
 param.nu_h = 0.
 param.nu_l = 0.
@@ -105,7 +105,7 @@ phi0 = np.zeros((param.ny+6, param.nx+6))
 #phi0[:,:] += -np.abs(1-np.tanh(((grid.yr)-param.Ly*0.4)*200))/2
 
 # Droplets:
-radius = 0.15
+radius = 0.1
 x_drop = 0.2
 y_drop = 0.5
 shrpn = 100
