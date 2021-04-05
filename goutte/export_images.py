@@ -11,7 +11,7 @@ import matplotlib.animation as animation
 
 enregistrer = False
 
-f = Dataset('/home/tugdual/data/fluid2d/smooth_start_q8-tracerlarge_lapladiago/smooth_start_q8-tracerlarge_lapladiago_his.nc')
+f = Dataset('~/data/fluid2d/smooth_start_q8-tracerlarge_lapladiago/smooth_start_q8-tracerlarge_lapladiago_his.nc')
 #print(f)
 #print(f.variables.keys())
 
