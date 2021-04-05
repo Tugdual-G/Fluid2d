@@ -9,14 +9,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+import os
+
 enregistrer = False
 
-f = Dataset('~/data/fluid2d/smooth_start_q8-tracerlarge_lapladiago/smooth_start_q8-tracerlarge_lapladiago_his.nc')
+home = os.environ['HOME']
+print(os.listdir(home + "/data/fluid2d")) # The name of the dirs are the name of the experiments
+
+tries = 0
+
+while tries < 3:
+    try:
+        fold = input("Enter the experiment you want to see\n")
+        f = Dataset(home + '/data/fluid2d/' + fold + '/' + fold + '_his.nc')
+        break
+    except:
+        print("Incorrect input")
+        tries += 1
+        if tries > 2:
+            exit(0) # If we got too many errors we exit
+
 #print(f)
 #print(f.variables.keys())
 
 phi = f.variables['tracer']
-#print(phi.dimensions)
+#print(phi)
 # Indice de l'image
 i = 200
 
@@ -33,7 +50,7 @@ titre = "t="+str(round(t[i],3))+"s"
 plt.title(titre)
 plt.tight_layout()
 
-
+plt.show()
 
 if enregistrer:
     cmap = 'inferno'
