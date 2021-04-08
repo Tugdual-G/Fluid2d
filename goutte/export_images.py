@@ -20,9 +20,9 @@ def get_center(phi_at_t, treshold):
         for j in range(len(phi_at_t[0,:])):
             if phi_at_t[i,j] > treshold:
                 # i and j are in the wrong order because of how we obtain phi
-                sum_phiy += max_x * j / len(x)  * phi_at_t[i,j]
+                sum_phiy += max_x * i / len(x)  * phi_at_t[i,j]
                 # we normalize j or i an integer, to the real distance between two points
-                sum_phix += max_y * i / len(y)  * phi_at_t[i,j]
+                sum_phix += max_y * j / len(y)  * phi_at_t[i,j]
                 sum_phi += phi_at_t[i,j]
 
     return sum_phix/ sum_phi, sum_phiy/ sum_phi
@@ -131,13 +131,13 @@ v = [0]
 v_x = [0]
 v_y = [0]
 
-prev_x, prev_y = get_center(phi[0, :, :], 0.8)
+prev_x, prev_y = get_center(phi[0, :, :].T, 0.8)
 
 #Computation of different speed
 for i in range(1,len(t)):
     print(i, "/", len(t)) # Can be used to show progress
-    x_i, y_i = get_center(phi[i, :, :], 0.8)
-    v_x.append((x_i - prev_x) / (t[i] - t[i-1]))
+    x_i, y_i = get_center(phi[i, :, :].T, 0.8) #.T should be removed in case of a change in the direction of g in the experiment
+    v_x.append((x_i - prev_x) / (t[i] - t[i-1])) # get speed by the difference of position / difference in time
     v_y.append((y_i - prev_y) / (t[i] - t[i-1]))
     v.append((np.sqrt((x_i - prev_x)**2 + (y_i - prev_y)**2)) / (t[i] - t[i-1]))
     prev_x = x_i
@@ -157,7 +157,7 @@ oscilation = []
 
 for i in range(len(t)):
     print(i, "/", len(t)) # Can be used to show progress
-    y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.97)
+    y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.97) #.T should be removed in case of a change in the direction of g in the experiment
     print(y_max_i, y_min_i, y_max_i - y_min_i)
     oscilation.append(y_max_i - y_min_i)
 
