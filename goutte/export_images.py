@@ -93,16 +93,16 @@ t = np.ravel(f.variables['t'])
 
 x_center, y_center = get_center(phi[i, :, :].T, 0.8)
 
-plt.figure('goutte', figsize=(5, 10))
-plt.clf()
-plt.pcolormesh(X, Y, np.flipud(phi[i, :, :].T), cmap='inferno', shading='gouraud')
-plt.colorbar()
-#plt.plot(y_center, 2 - x_center, "ro")
-titre = "t="+str(round(t[i],3))+"s"
-plt.title(titre)
-plt.tight_layout()
+#plt.figure('goutte', figsize=(5, 10))
+#plt.clf()
+#plt.pcolormesh(X, Y, np.flipud(phi[i, :, :].T), cmap='inferno', shading='gouraud')
+#plt.colorbar()
+##plt.plot(y_center, 2 - x_center, "ro")
+#titre = "t="+str(round(t[i],3))+"s"
+#plt.title(titre)
+#plt.tight_layout()
 
-#plt.show()
+##plt.show()
 
 if enregistrer:
     cmap = 'inferno'
@@ -144,6 +144,18 @@ for i in range(1,len(t)):
     prev_y = y_i
 
 plt.figure("Speed")
+#First time
+plt.subplot2grid((3,4), (0,0), colspan=1, rowspan=2)
+plt.pcolormesh(X, Y, np.flipud(phi[0, :, :].T), cmap='inferno', shading='gouraud')
+plt.subplot2grid((3,4), (0,1), colspan=1, rowspan=2)
+plt.pcolormesh(X, Y, np.flipud(phi[len(t)//3, :, :].T), cmap='inferno', shading='gouraud')
+plt.subplot2grid((3,4), (0,2), colspan=1, rowspan=2)
+plt.pcolormesh(X, Y, np.flipud(phi[2*len(t)//3, :, :].T), cmap='inferno', shading='gouraud')
+plt.subplot2grid((3,4), (0,3), colspan=1, rowspan=2)
+plt.pcolormesh(X, Y, np.flipud(phi[-1, :, :].T), cmap='inferno', shading='gouraud')
+
+plt.subplot2grid((3,4), (2,0), colspan=4, rowspan=1)
+
 plt.plot(t, v, label = "Total speed")
 plt.plot(t, v_x, label = "Vx")
 plt.plot(t, v_y, label = "Vy")
