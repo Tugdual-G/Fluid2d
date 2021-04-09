@@ -9,10 +9,10 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'smooth_start_q8-tracerlarge_lapladiago_ordr3'
+param.expname = 'longcouloir'
 
 # domain and resolution
-ratio = 2
+ratio = 3
 param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
@@ -22,7 +22,7 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 1.
+param.tend = 1.6
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 1.
+param.sigma = 1.5
 param.gravity = -10
 param.nu_h = 0.
 param.nu_l = 0.
@@ -106,7 +106,7 @@ phi0 = np.zeros((param.ny+6, param.nx+6))
 
 # Droplets:
 radius = 0.1
-x_drop = 0.2
+x_drop = 0.1
 y_drop = 0.5
 shrpn = 100
 
