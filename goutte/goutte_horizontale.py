@@ -9,11 +9,11 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'longcouloir'
+param.expname = 'longcouloir_q7'
 
 # domain and resolution
 ratio = 3
-param.ny = 2**8
+param.ny = 2**7
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -22,7 +22,7 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 1.6
+param.tend = 1.
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 1.5
+param.sigma = 1.
 param.gravity = -10
 param.nu_h = 0.
 param.nu_l = 0.
