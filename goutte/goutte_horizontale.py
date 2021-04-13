@@ -9,11 +9,11 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'longcouloir_q7'
+param.expname = 'miscible_q9'
 
 # domain and resolution
-ratio = 3
-param.ny = 2**7
+ratio = 2
+param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 1.
+param.sigma = 0.
 param.gravity = -10
 param.nu_h = 0.
 param.nu_l = 0.
@@ -106,7 +106,7 @@ phi0 = np.zeros((param.ny+6, param.nx+6))
 
 # Droplets:
 radius = 0.1
-x_drop = 0.1
+x_drop = 0.2
 y_drop = 0.5
 shrpn = 100
 

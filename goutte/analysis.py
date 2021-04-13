@@ -7,7 +7,7 @@ Created on Wed Mar 17 13:21:06 2021
 from netCDF4 import Dataset
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+
 
 import os
 
@@ -57,17 +57,16 @@ def get_min_max_phi(phi_at_t, threshold):
 
     return y_min, y_max
 
-enregistrer = False
-
 home = os.environ['HOME']
-print(os.listdir(home + "/data/fluid2d")) # The name of the dirs are the name of the experiments
+path = "/data/fluid2d/bien"
+print(os.listdir(home + path)) # The name of the dirs are the name of the experiments
 
 tries = 0
 
 while tries < 3:
     try:
         fold = input("Enter the experiment you want to see\n")
-        f = Dataset(home + '/data/fluid2d/' + fold + '/' + fold + '_his.nc')
+        f = Dataset(home + path + '/' + fold + '/' + fold + '_his.nc')
         break
     except:
         print("Incorrect input")
@@ -84,7 +83,7 @@ phi = f.variables['phi']
 
 #%%
 
-i = 200
+i = 202
 
 max_x = np.amax(f.variables['y'])
 max_y = np.amax(f.variables['x'])
@@ -137,20 +136,24 @@ for i in range(1,len(t)):
     prev_y = y_i
 
 
-np.save(home + '/data/fluid2d/' + fold + '/' + fold + 'velocity.npy', v)
-np.save(home + '/data/fluid2d/' + fold + '/' + fold + 'velocity_x.npy', v_x)
-np.save(home + '/data/fluid2d/' + fold + '/' + fold + 'velocity_y.npy', v_y)
+np.save(home + path + '/' + fold + '/' + fold + 'velocity.npy', v)
+np.save(home + path + '/' + fold + '/' + fold + 'velocity_x.npy', v_x)
+np.save(home + path + '/' + fold + '/' + fold + 'velocity_y.npy', v_y)
 
 
 #%%
 oscilation = []
+list_y_max = []
+list_y_min = []
 
 for i in range(len(t)):
     print(i, "/", len(t)) # Can be used to show progress
     y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.95) #.T should be removed in case of a change in the direction of g in the experiment
     print(y_max_i, y_min_i, y_max_i - y_min_i)
     oscilation.append(y_max_i - y_min_i)
+    list_y_max += [y_max]
+    list_y_min += [y_min]
 
-np.save(home + '/data/fluid2d/' + fold + '/' + fold + 'oscilations.npy', oscilation)
-
-
+np.save(home + path + '/' + fold + '/' + fold + 'oscilations.npy', oscilation)
+np.save(home + path + '/' + fold + '/' + fold + 'y_max.npy', list_y_max)
+np.save(home + path + '/' + fold + '/' + fold + 'y_min.npy', list_y_min)
