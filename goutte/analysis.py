@@ -20,45 +20,44 @@ def get_center(phi_at_t, treshold):
         for j in range(len(phi_at_t[0,:])):
             if phi_at_t[i,j] > treshold:
                 # i and j are in the wrong order because of how we obtain phi
-                sum_phiy += max_y * i / len(y)  * phi_at_t[i,j]
+                sum_phiy += y[i]  * phi_at_t[i,j]
                 # we normalize j or i an integer, to the real distance between two points
-                sum_phix += max_x * j / len(x)  * phi_at_t[i,j]
+                sum_phix += x[j]  * phi_at_t[i,j]
                 sum_phi += phi_at_t[i,j]
 
     return sum_phix/ sum_phi, sum_phiy/ sum_phi
 
-def get_min_max_phi(phi_at_t, threshold):
+def get_min_max_phi(phi_at_t, threshold, index_x):
     """ outputs the y minimum and maximum of phi if its above a given treshold """
     y_min = 100
     y_max = 0
+    max_done = False
+    iterate = True
+    j = len(phi_at_t[:,0])-1
 
-    for i in range(len(phi_at_t[0,:])):
-        # We iterate over all possible x to find the max of y and its min
-        max_done = False
-        iterate = True
-        j = len(phi_at_t[:,0]) - 1
-        while iterate and j > 0:
-            # We iterate over j, until we have found the minimum and the maximum (or if we found nothing above the threshold
-            if max_done == False and phi_at_t[j, i] > threshold:
+    while iterate and j > 0:
+        # We iterate over j, until we have found the minimum and the maximum (or if we found nothing above the threshold
+        if max_done == False and phi_at_t[j, index_x] > threshold:
+            print("y_max =", phi_at_t[j, index_x])
+            y_max = y[j] 
+            max_done = True
 
-                if y_max < max_y * j / len(y):
-                    y_max = max_y * j / len(y)
-                max_done = True
+        #if max_done:
+            #print(phi_at_t[j, i])
 
-            #if max_done:
-                #print(phi_at_t[j, i])
+        if max_done and phi_at_t[j, index_x] < threshold:
 
-            if max_done and phi_at_t[j, i] < threshold:
+            y_min = y[j+1]
+            iterate = False
+            print("got here")
+        j -= 1
 
-                if y_min > max_y * (j+1) / len(y):
-                    y_min = max_y * (j+1) / len(y)
-                iterate = False
-            j -= 1
-
+    print(y_min, y_max)
     return y_min, y_max
 
 home = os.environ['HOME']
-path = "/data/fluid2d/bien"
+#path = "/data/fluid2d/bien"
+path = "/data/fluid2d"
 print(os.listdir(home + path)) # The name of the dirs are the name of the experiments
 
 tries = 0
@@ -83,15 +82,17 @@ phi = f.variables['phi']
 
 #%%
 
-i = 202
+i = 0
 
 max_x = np.amax(f.variables['y'])
 max_y = np.amax(f.variables['x'])
 
-print(max_x, max_y)
+# print(max_x, max_y)
 
 x = np.linspace(0,max_x,np.shape(phi[1, :, :].T)[1])
 y = np.linspace(0,max_y,np.shape(phi[1, :, :].T)[0])
+
+dx = max_x / len(x)
 
 print(len(x), len(y))
 
@@ -100,14 +101,17 @@ t = np.ravel(f.variables['t'])
 
 x_center, y_center = get_center(phi[i, :, :].T, 0.8)
 
-y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.8)
+indices = np.argwhere((x > x_center - dx) * ( x < x_center + dx))
+
+print(indices[0], x[indices[0]],indices[-1], x[indices[-1]], x_center)
+y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.8, indices[0][0])
 
 
 plt.figure('goutte', figsize=(5, 10))
 plt.clf()
 plt.pcolormesh(X, Y, np.flipud(phi[i, :, :].T), cmap='inferno', shading='gouraud')
 plt.colorbar()
-plt.plot(x_center, max_y-y_center, "ro")
+plt.plot(x_center, y[-1]-y_center, "ro")
 plt.axhline(max_y-y_max)
 plt.axhline(max_y-y_min)
 print(x_center, y_center)
@@ -125,6 +129,10 @@ v_y = [0]
 
 prev_x, prev_y = get_center(phi[0, :, :].T, 0.8)
 
+oscillation = [y_max - y_min]
+list_y_max = []
+list_y_min = []
+
 #Computation of different speed
 for i in range(1,len(t)):
     print(i, "/", len(t)) # Can be used to show progress
@@ -134,26 +142,37 @@ for i in range(1,len(t)):
     v.append((np.sqrt((x_i - prev_x)**2 + (y_i - prev_y)**2)) / (t[i] - t[i-1]))
     prev_x = x_i
     prev_y = y_i
+    
+    
+    indices = np.argwhere((x > x_i - dx) * ( x < x_i + dx))
 
+    y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.8, indices[0][0]) #.T should be removed in case of a change in the direction of g in the experiment
+    oscillation.append(y_max_i - y_min_i)
+    list_y_max += [y_max]
+    list_y_min += [y_min]
 
 np.save(home + path + '/' + fold + '/' + fold + 'velocity.npy', v)
 np.save(home + path + '/' + fold + '/' + fold + 'velocity_x.npy', v_x)
 np.save(home + path + '/' + fold + '/' + fold + 'velocity_y.npy', v_y)
 
-
-#%%
-oscilation = []
-list_y_max = []
-list_y_min = []
-
-for i in range(len(t)):
-    print(i, "/", len(t)) # Can be used to show progress
-    y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.95) #.T should be removed in case of a change in the direction of g in the experiment
-    print(y_max_i, y_min_i, y_max_i - y_min_i)
-    oscilation.append(y_max_i - y_min_i)
-    list_y_max += [y_max]
-    list_y_min += [y_min]
-
-np.save(home + path + '/' + fold + '/' + fold + 'oscilations.npy', oscilation)
+np.save(home + path + '/' + fold + '/' + fold + 'oscillations.npy', oscillation)
 np.save(home + path + '/' + fold + '/' + fold + 'y_max.npy', list_y_max)
 np.save(home + path + '/' + fold + '/' + fold + 'y_min.npy', list_y_min)
+
+
+#%%
+#oscilation = []
+#list_y_max = []
+#list_y_min = []
+
+#for i in range(len(t)):
+    #print(i, "/", len(t)) # Can be used to show progress
+    #y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.95) #.T should be removed in case of a change in the direction of g in the experiment
+    ## print(y_max_i, y_min_i, y_max_i - y_min_i)
+    #oscilation.append(y_max_i - y_min_i)
+    #list_y_max += [y_max]
+    #list_y_min += [y_min]
+
+#np.save(home + path + '/' + fold + '/' + fold + 'oscilations.npy', oscilation)
+#np.save(home + path + '/' + fold + '/' + fold + 'y_max.npy', list_y_max)
+#np.save(home + path + '/' + fold + '/' + fold + 'y_min.npy', list_y_min)
