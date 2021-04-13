@@ -15,8 +15,11 @@ plt.rc('font', family = 'serif')
 enregistrer = False
 
 home = os.environ['HOME']
-path = "/data/fluid2d/bien"
+path = "/data/fluid2d"
 print(os.listdir(home + path)) # The name of the dirs are the name of the experiments
+
+#fold = "test_analysis"
+#f = Dataset(home + path +'/' + fold + '/' + fold + '_his.nc')
 
 tries = 0
 
@@ -38,7 +41,7 @@ while tries < 3:
 phi = f.variables['tracer']
 #print(phi)
 # Indice de l'image
-i = 300
+i = 0
 
 max_x = np.amax(f.variables['y'])
 max_y = np.amax(f.variables['x'])
@@ -107,7 +110,8 @@ v = np.load(home + path + '/' + fold + '/' + fold + 'velocity.npy')
 v_x = np.load(home + path + '/' + fold + '/' + fold + 'velocity_x.npy')
 v_y = np.load(home + path + '/' + fold + '/' + fold + 'velocity_y.npy')
 
-plt.figure("Speed", dpi = 200)
+oscillation = np.load(home + path + '/' + fold + '/' + fold + 'oscillations.npy')
+
 """#First time
 ax1 = plt.subplot2grid((4,4), (0,0), colspan=1, rowspan=3)
 plt.pcolormesh(X, Y, np.flipud(phi[0, :, :].T), cmap='inferno', shading='gouraud')
@@ -119,17 +123,28 @@ ax4 = plt.subplot2grid((4,4), (0,3), colspan=1, rowspan=3, sharey=ax3, frameon=F
 plt.pcolormesh(X, Y, np.flipud(phi[-1, :, :].T), cmap='inferno', shading='gouraud')
 plt.subplot2grid((4,4), (3,0), colspan=4, rowspan=1)"""
 
-
+fig, ax = plt.subplots(2,1, sharex = True)
 
 #plt.plot(t, v, 'k', linewidth=0.5, label = "Total speed")
-plt.plot(t, v_x, 'b', linewidth=0.5, label = "$V_x$")
-plt.plot(t, v_y, 'k', linewidth=0.5, label = "$V_y$")
-plt.title("Speed of the bubble")
-plt.xlabel("t")
-plt.ylabel("V")
-plt.grid()
-plt.tight_layout()
-plt.legend()
+ax[0].plot(t, v_x, 'b', linewidth=0.5, label = "$V_x$")
+ax[0].plot(t, v_y, 'k', linewidth=0.5, label = "$V_y$")
+ax[0].set_title("Speed of the bubble")
+ax[0].set_xlabel("t")
+ax[0].set_ylabel("V")
+ax[0].grid()
+#ax[0].tight_layout()
+ax[0].legend()
+#plt.show()
+
+# plt.figure("oscillation")
+#plt.clf()
+ax[1].plot(t, oscillation, 'k', linewidth=0.5)
+ax[1].set_ylabel("Height")
+ax[1].set_xlabel("time")
+ax[1].set_title("Height of the buble in time")
+
+print(oscillation)
+
 plt.show()
 
 #%%
@@ -146,12 +161,3 @@ for i in range(nmbr):
     ax[i].set_title(titre)
 ax[2].set_xlabel('x')
 ax[0].set_ylabel('y')
-
-oscilation = np.load(home + path + '/' + fold + '/' + fold + 'oscilations.npy')
-plt.figure("oscillation")
-plt.clf()
-plt.plot(t, oscilation, 'k', linewidth=0.5)
-plt.ylabel("Height")
-plt.xlabel("time")
-plt.title("Height of the buble in time")
-plt.show()
