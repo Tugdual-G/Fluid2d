@@ -9,11 +9,11 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'test_q7'
+param.expname = 'smooth_start_q8_long'
 
 # domain and resolution
-ratio = 2
-param.ny = 2**7
+ratio = 3
+param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -22,14 +22,14 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 0.2
+param.tend = 1.5
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
 param.dtmax = 0.01
 
 # discretization
-param.order = 5
+param.order = 3
 param.timestepping = 'RK3_SSP'
 
 # output
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 1.0
+param.sigma = 2.0
 param.gravity = -10
 param.n_xi = 3.
 
@@ -103,7 +103,7 @@ phi0 = np.zeros((param.ny+6, param.nx+6))
 #phi0[:,:] += -np.abs(1-np.tanh(((grid.yr)-param.Ly*0.4)*200))/2
 
 # Droplets:
-radius = 0.1
+radius = 0.15
 x_drop = 0.2
 y_drop = 0.5
 shrpn = 100
@@ -134,7 +134,7 @@ X , Y = np.meshgrid(x,x)
 #  Set tracer
 # =============================================================================
 
-tracer[:,:] = 0.5*np.cos((grid.yr-0.5)*100)**3*np.cos((grid.yr-0.5)*3)**4
+tracer[:,:] = 0.5*np.cos((grid.yr-0.5)*125)**3*np.cos((grid.yr-0.5)*3)**4
 
 add_phi(tracer, param, grid, x_drop, y_drop, radius, sharpness=shrpn)
 

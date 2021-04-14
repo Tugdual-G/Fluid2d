@@ -148,7 +148,7 @@ list_y_min = []
 
 for i in range(len(t)):
     print(i, "/", len(t)) # Can be used to show progress
-    y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.95) #.T should be removed in case of a change in the direction of g in the experiment
+    y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.8) #.T should be removed in case of a change in the direction of g in the experiment
     print(y_max_i, y_min_i, y_max_i - y_min_i)
     oscilation.append(y_max_i - y_min_i)
     list_y_max += [y_max]

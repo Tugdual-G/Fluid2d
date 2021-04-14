@@ -64,11 +64,11 @@ x = np.linspace(0,max_x,np.shape(phi[1, :, :].T)[1])
 y = np.linspace(0,max_y,np.shape(phi[1, :, :].T)[0])
 X, Y = np.meshgrid(x,y)
 t = np.ravel(f.variables['t'])
-i_t = np.nonzero(np.abs(t-0.6)<0.01)[0]
+i_t = np.nonzero(np.abs(t-0.0)<0.01)[0]
 i = i_t[0]
 print(i)
-#y_max = np.load(home + path +'/' + fold + '/' + fold + 'y_max.npy')
-#y_min = np.load(home + path +'/' + fold + '/' + fold + 'y_min.npy')
+y_max = np.load(home + path +'/' + fold + '/' + fold + 'y_max.npy')
+y_min = np.load(home + path +'/' + fold + '/' + fold + 'y_min.npy')
 
 plt.figure('goutte3', figsize=(5, 10))
 plt.clf()
@@ -130,7 +130,6 @@ v_x = np.load(home + path + '/' + fold + '/' + fold + 'velocity_x.npy')
 v_y = np.load(home + path + '/' + fold + '/' + fold + 'velocity_y.npy')
 
 plt.figure("Speed", dpi = 200)
-plt.clf()
 """#First time
 ax1 = plt.subplot2grid((4,4), (0,0), colspan=1, rowspan=3)
 plt.pcolormesh(X, Y, np.flipud(phi[0, :, :].T), cmap='inferno', shading='gouraud')
@@ -145,8 +144,8 @@ plt.subplot2grid((4,4), (3,0), colspan=4, rowspan=1)"""
 
 
 #plt.plot(t, v, 'k', linewidth=0.5, label = "Total speed")
-plt.plot(t, average(v_x,20), 'b', linewidth=0.5, label = "$V_x$")
-plt.plot(t, average(v_y,20), 'k', linewidth=0.5, label = "$V_y$")
+plt.plot(t, v_x, 'b', linewidth=0.5, label = "$V_x$")
+plt.plot(t, v_y, 'k', linewidth=0.5, label = "$V_y$")
 plt.title("Speed of the bubble")
 plt.xlabel("t")
 plt.ylabel("V")

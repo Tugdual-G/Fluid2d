@@ -325,7 +325,7 @@ class Operators(Param):
         self.fill_halo(y)
         dxdt[iw][:, :] = y
 
-    def rhs_droplet(self, x, t, dxdt, rho_l, rho_h, rho_0, xi, sigma, M, g, nu_h, nu_l):
+    def rhs_droplet(self, x, t, dxdt, rho_l, rho_h, rho_0, xi, sigma, M, g):
         """ rho_l = low density, rho_h = high density"""
 
         i_phi = self.varname_list.index('phi')
