@@ -38,7 +38,6 @@ def get_min_max_phi(phi_at_t, threshold, index_x):
     while iterate and j > 0:
         # We iterate over j, until we have found the minimum and the maximum (or if we found nothing above the threshold
         if max_done == False and phi_at_t[j, index_x] > threshold:
-            print("y_max =", phi_at_t[j, index_x])
             y_max = y[j] 
             max_done = True
 
@@ -49,10 +48,8 @@ def get_min_max_phi(phi_at_t, threshold, index_x):
 
             y_min = y[j+1]
             iterate = False
-            print("got here")
         j -= 1
 
-    print(y_min, y_max)
     return y_min, y_max
 
 home = os.environ['HOME']
@@ -93,19 +90,20 @@ x = np.linspace(0,max_x,np.shape(phi[1, :, :].T)[1])
 y = np.linspace(0,max_y,np.shape(phi[1, :, :].T)[0])
 
 dx = max_x / len(x)
-
-print(len(x), len(y))
+dy = max_y / len(y)
 
 X, Y = np.meshgrid(x,y)
 t = np.ravel(f.variables['t'])
 
 x_center, y_center = get_center(phi[i, :, :].T, 0.8)
 
-indices = np.argwhere((x > x_center - dx) * ( x < x_center + dx))
+indices_x = np.argwhere((x > x_center - dx) * ( x < x_center + dx))
+indices_y = np.argwhere((y > y_center - dy) * ( y < y_center + dy))
 
-print(indices[0], x[indices[0]],indices[-1], x[indices[-1]], x_center)
-y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.8, indices[0][0])
-
+y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.8, indices_x[0][0])
+hauteur = y_max - y_min
+x_min, x_max = get_min_max_phi(phi[i, :, :], 0.8, indices_y[0][0])
+largeur = x_max - x_min
 
 plt.figure('goutte', figsize=(5, 10))
 plt.clf()
@@ -129,7 +127,7 @@ v_y = [0]
 
 prev_x, prev_y = get_center(phi[0, :, :].T, 0.8)
 
-oscillation = [y_max - y_min]
+oscillation = [hauteur/largeur]
 list_y_max = []
 list_y_min = []
 
@@ -143,11 +141,15 @@ for i in range(1,len(t)):
     prev_x = x_i
     prev_y = y_i
     
-    
-    indices = np.argwhere((x > x_i - dx) * ( x < x_i + dx))
+    indices_x = np.argwhere((x > x_i - dx) * ( x < x_i + dx))
+    indices_y = np.argwhere((y > y_i - dy) * ( y < y_i + dy))
 
-    y_min_i, y_max_i = get_min_max_phi(phi[i, :, :].T, 0.8, indices[0][0]) #.T should be removed in case of a change in the direction of g in the experiment
-    oscillation.append(y_max_i - y_min_i)
+    y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.8, indices_x[0][0])
+    hauteur = y_max - y_min
+    x_min, x_max = get_min_max_phi(phi[i, :, :], 0.8, indices_y[0][0])
+    largeur = x_max - x_min
+
+    oscillation.append(hauteur/largeur)
     list_y_max += [y_max]
     list_y_min += [y_min]
 
