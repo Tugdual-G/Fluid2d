@@ -20,6 +20,9 @@ Modèle tension de surface :
 \begin{equation}
 	\vec{F} = \rho \vec{g} + \overbrace{\left[ 4 \eta \phi (\phi - 1) \left(phi - \dfrac{1}{2} \right) - k\nabla^2 \phi \right] \nabla \phi}^{Tension}
 \end{equation}
+
+\[ \vec{T} = \left[ 4 \eta \phi (\phi - 1) \left(phi - \dfrac{1}{2} \right) - k\nabla^2 \phi \right] \nabla \phi\]
+
 Avec :
 \[
 	\eta = 12 \dfrac{\sigma}{\xi} \quad \quad \quad \kappa = \dfrac{3}{2} \sigma \xi \quad \quad \quad \xi = 3 dx
@@ -33,17 +36,17 @@ Avec :
 
 Ajout de la tension :
 \[
-	-\nabla p + \vec{F} = - \nabla (p + \rho_0 \psi) + \delta \rho \vec{g} +  \overbrace{[\quad]}^{Tension}
+	-\nabla p + \vec{F} = - \nabla (p + \rho_0 \psi) + \delta \rho \vec{g} + \vec{T}
 \]
 
 Équation de la vorticité sans viscosité :
 
 \[
-	\nabla \times (3) \Rightarrow \dfrac{D\omega}{D t} =  \dfrac{1}{\rho_0} \nabla \times \left( \delta \rho \vec{g} + \overbrace{[\quad]}^{Tension}\right)
+	\nabla \times (3) \Rightarrow \dfrac{D\omega}{D t} =  \dfrac{1}{\rho_0} \nabla \times \left( \delta \rho \vec{g} + \vec{T} \right)
 \]
 
 \[
-	\dfrac{D\omega}{D t} = \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} + \dfrac{1}{\rho_0} \nabla \times \overbrace{[\quad]}^{Tension}
+	\dfrac{D\omega}{D t} = \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} + \dfrac{1}{\rho_0} \nabla \times \vec{T}
 \]
 
 \paragraph{Notre modèle sans viscosité }

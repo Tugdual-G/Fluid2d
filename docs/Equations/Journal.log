@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.1.18)  13 APR 2021 16:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.1.18)  14 APR 2021 11:47
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -133,7 +133,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 15.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Overfull \hbox (20.54112pt too wide) in paragraph at lines 71--73
+Overfull \hbox (20.54112pt too wide) in paragraph at lines 74--76
 []\OT1/cmr/bx/n/10 Cependant ci c'^^Setait vrai-ment le cas la goutte ou la bul
 le ne bougeraient
  []
@@ -159,7 +159,7 @@ t/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts
 public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmsy7.pfb>
-Output written on Journal.pdf (2 pages, 101631 bytes).
+Output written on Journal.pdf (2 pages, 101320 bytes).
 PDF statistics:
  47 PDF objects out of 1000 (max. 8388607)
  33 compressed objects within 1 object stream

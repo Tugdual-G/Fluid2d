@@ -56,8 +56,7 @@ def get_min_max_phi(phi_at_t, threshold, index_x):
     return y_min, y_max
 
 home = os.environ['HOME']
-#path = "/data/fluid2d/bien"
-path = "/data/fluid2d"
+path = "/data/fluid2d/bien"
 print(os.listdir(home + path)) # The name of the dirs are the name of the experiments
 
 tries = 0

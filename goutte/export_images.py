@@ -28,11 +28,10 @@ def average(x,n):
 #%%
         
 
-
 enregistrer = False
 
 home = os.environ['HOME']
-path = "/data/fluid2d"
+path = "/data/fluid2d/bien"
 print(os.listdir(home + path)) # The name of the dirs are the name of the experiments
 
 #fold = "test_analysis"
@@ -129,16 +128,16 @@ v_y = [0]
 v = np.load(home + path + '/' + fold + '/' + fold + 'velocity.npy')
 v_x = np.load(home + path + '/' + fold + '/' + fold + 'velocity_x.npy')
 v_y = np.load(home + path + '/' + fold + '/' + fold + 'velocity_y.npy')
+v_x = average(v_x,10)
 
 
 oscillation = np.load(home + path + '/' + fold + '/' + fold + 'oscillations.npy')
-
+oscillation = average(oscillation,10)
 fig, ax = plt.subplots(2,1, sharex = True)
 
 ax[0].plot(t, v_x, 'b', linewidth=0.5, label = "$V_x$")
 ax[0].plot(t, v_y, 'k', linewidth=0.5, label = "$V_y$")
 ax[0].set_title("Speed of the bubble")
-ax[0].set_xlabel("t")
 ax[0].set_ylabel("V")
 ax[0].grid()
 #ax[0].tight_layout()
@@ -149,7 +148,7 @@ ax[0].legend()
 #plt.clf()
 ax[1].plot(t, oscillation, 'k', linewidth=0.5)
 ax[1].set_ylabel("Height")
-ax[1].set_xlabel("time")
+ax[1].set_xlabel("t")
 ax[1].set_title("Height of the buble in time")
 plt.show()
 
