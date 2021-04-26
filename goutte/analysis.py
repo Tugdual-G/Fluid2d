@@ -19,7 +19,7 @@ def get_center(phi_at_t, treshold):
     sum_phi = 0
     for i in range(len(phi_at_t[:, 0])):
         for j in range(len(phi_at_t[0, :])):
-            if phi_at_t[i, j] > treshold:
+            if phi_at_t[i, j] < treshold:
                 # i and j are in the wrong order because of how we obtain phi
                 sum_phiy += y[i] * phi_at_t[i, j]
                 sum_phix += x[j] * phi_at_t[i, j]
@@ -41,14 +41,14 @@ def get_min_max_phi(phi_at_t, threshold, index_x):
         # We iterate over j, until we have found the minimum and the maximum
         # We should always find a value because we take the index of the center
         # but the j > 0 avoids any crash
-        if max_done is False and phi_at_t[j, index_x] > threshold:
+        if max_done is False and phi_at_t[j, index_x] < threshold:
             y_max = y[j]
             max_done = True
 
         # f max_done:
             # rint(phi_at_t[j, i])
 
-        if max_done and phi_at_t[j, index_x] < threshold:
+        if max_done and phi_at_t[j, index_x] > threshold:
 
             y_min = y[j+1]
             iterate = False

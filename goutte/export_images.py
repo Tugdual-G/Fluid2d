@@ -32,7 +32,7 @@ enregistrer = False
 
 home = os.environ['HOME']
 
-path = "/data/fluid2d"
+path = "/data/fluid2d/bien"
 print(os.listdir(home + path))# The name of the dirs are the name of the experiments
 
 # fold = ""
@@ -55,7 +55,7 @@ while tries < 3:
 # print(f)
 # print(f.variables.keys())
 
-phi = f.variables['tracer']
+phi = f.variables['phi']
 # print(phi)
 
 
@@ -68,25 +68,26 @@ t = np.ravel(f.variables['t'])
 i_t = np.nonzero(np.abs(t-0.6)<0.01)[0]
 i = i_t[0]
 print(i)
-#y_max = np.load(home + path +'/' + fold + '/' + fold + 'y_max.npy')
-#y_min = np.load(home + path +'/' + fold + '/' + fold + 'y_min.npy')
 
-y_max = np.load(home + path + '/' + fold + '/' + fold + 'y_max.npy')
-y_min = np.load(home + path + '/' + fold + '/' + fold + 'y_min.npy')
 
-plt.figure('goutte', figsize=(5, 10))
+plt.figure('goutte')
 
 plt.clf()
 plt.pcolormesh(X, Y, np.flipud(phi[i, :, :].T), cmap='inferno', shading='gouraud')
-plt.colorbar()
+plt.colorbar(label='Densité de tracer')
+plt.xlabel('x')
+#plt.ylabel('y')
 # plt.axhline(max_y-y_max[i])
 # plt.axhline(max_y-y_min[i])
+axes = plt.gca()
+axes.set_aspect('equal', 'box')
+plt.yticks([0,0.25,0.5,0.75,1,1.25,1.5,1.75],['','','','','','','',''])
 titre = "t="+str(round(t[i], 3))+"s"
 plt.title(titre)
-plt.tight_layout()
+plt.tight_layout(pad=1)
 # plt.show()
 
-# plt.savefig('goutte_non-miscible.pdf', dpi=300)
+plt.savefig(home + path + '/' + fold + '/' + 'view.pdf', dpi=300)
 
 #%%
 y_max = np.load(home + path + '/' + fold + '/' + fold + 'y_max.npy')
@@ -132,33 +133,33 @@ v_y = [0]
 
 v_x = np.load(home + path + '/' + fold + '/' + fold + 'velocity_x.npy')
 v_y = np.load(home + path + '/' + fold + '/' + fold + 'velocity_y.npy')
-v_x = average(v_x,20)
-v_y = average(v_y,20)
+v_x = average(v_x,40)
+v_y = average(v_y,40)
 
 
 oscillation = np.load(home + path + '/' + fold + '/' + fold + 'oscillations.npy')
-oscillation = average(oscillation,20)
-fig, ax = plt.subplots(2,1, sharex = True)
+oscillation = average(oscillation,10)
+fig, ax = plt.subplots(2,1, num='speed', sharex = True, clear=True)
 
 ax[0].plot(t, v_x, 'b', linewidth=0.5, label = "$V_x$")
 ax[0].plot(t, v_y, 'k', linewidth=0.5, label = "$V_y$")
-ax[0].set_title("Speed of the bubble")
+ax[0].set_title("Vitesse de la bulle", loc='left')
 ax[0].set_ylabel("V")
+#ax[0].set_xlabel("t")
 ax[0].grid()
-# ax[0].tight_layout()
 ax[0].legend()
 # plt.show()
 
 # plt.figure("oscillation")
 # plt.clf()
-ax[1].plot(t, oscillation, 'k', linewidth=0.5)
+ax[1].plot(t, 1-oscillation, 'k', linewidth=0.5)
 ax[1].grid()
-ax[1].set_ylabel("H/L")
+ax[1].set_ylabel("1-H/L")
 ax[1].set_xlabel("t")
-ax[1].set_title("Height over width ratio")
+ax[1].set_title("Ellipticité", loc='left', pad=5)
 
 plt.show()
-
+fig.savefig(home + path + '/' + fold + '/' + 'oscill.pdf', dpi = 300)
 #%%
 phi = f.variables['phi']
 nmbr = 5
@@ -167,10 +168,11 @@ fig1, ax = plt.subplots(1, nmbr, num='snap', clear=True, sharey=True,
 i = 0
 t_step = len(t)//nmbr
 for i in range(nmbr):
-    ax[i].pcolormesh(X, Y, np.flipud(phi[t_step*i, :, :].T), cmap='inferno', shading='gouraud')
-    ax[i].set_ylim(0.5, 3)
+    pcm = ax[i].pcolormesh(X, Y, np.flipud(phi[t_step*i, :, :].T), cmap='inferno', shading='gouraud')
     titre = "t="+str(round(t[t_step*i], 3))+" s"
     ax[i].set_title(titre)
+    ax[i].axis('equal')
 ax[2].set_xlabel('x')
 ax[0].set_ylabel('y')
-
+#fig.colorbar(pcm, ax=ax[-1], label='Densité de tracer', )
+fig1.savefig(home + path + '/' + fold + '/' + 'snapshot.pdf', dpi = 300)

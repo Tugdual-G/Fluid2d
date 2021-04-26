@@ -21,7 +21,7 @@ Modèle tension de surface :
 	\vec{F} = \rho \vec{g} + \overbrace{\left[ 4 \eta \phi (\phi - 1) \left(phi - \dfrac{1}{2} \right) - k\nabla^2 \phi \right] \nabla \phi}^{Tension}
 \end{equation}
 
-\[ \vec{T} = \left[ 4 \eta \phi (\phi - 1) \left(phi - \dfrac{1}{2} \right) - k\nabla^2 \phi \right] \nabla \phi\]
+\[ \vec{T} = \left[ 4 \eta \phi (\phi - 1) \left(\phi - \dfrac{1}{2} \right) - k\nabla^2 \phi \right] \nabla \phi\]
 
 Avec :
 \[
@@ -33,6 +33,10 @@ Avec :
 \begin{equation}
 	\underbrace{\dfrac{\rho}{\rho_0}}_{\simeq 1} \dfrac{D u}{D t} = \dfrac{-1}{\rho_0} \nabla p + \dfrac{\mu }{\rho_0} \nabla^2 \vec{u} + \dfrac{\vec{F}}{\rho_0}
 \end{equation}
+
+\[
+	\underbrace{\dfrac{\rho}{\rho_0}}_{\simeq 1} \dfrac{D u}{D t} = \dfrac{-1}{\rho_0} \nabla p + \dfrac{\mu }{\rho_0} \nabla^2 \vec{u} + \dfrac{1}{\rho_0}\left(\vec{T}+\rho \vec{g}\right)
+\]
 
 Ajout de la tension :
 \[
@@ -57,7 +61,7 @@ Ajout de la tension :
 
 Simplification de  due à la 2d: 
 
-\[  \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} = \partial_x (\delta \rho) \cdot g~\vec{e}_z \]
+\[  \dfrac{1}{\rho_0} \nabla (\delta \rho) \times \vec{g} = \dfrac{1}{\rho_0} \partial_x (\delta \rho) \cdot g~\vec{e}_z \]
 
 
 Donc, ce que l'on intègre en temps :

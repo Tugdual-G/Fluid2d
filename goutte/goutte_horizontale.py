@@ -9,11 +9,11 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'test_q7'
+param.expname = 'nu-2_q8'
 
 # domain and resolution
 ratio = 2
-param.ny = 2**7
+param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -22,14 +22,14 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 0.2
+param.tend = 1.5
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
 param.dtmax = 0.01
 
 # discretization
-param.order = 5
+param.order = 3
 param.timestepping = 'RK3_SSP'
 
 # output
@@ -40,7 +40,7 @@ param.freq_his = .002
 param.freq_diag = .1
 
 # plot
-param.plot_interactive = False
+param.plot_interactive = True
 param.plot_var = 'tracer'
 param.cax = [0., 1.]
 param.colorscheme = 'imposed'
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 1.0
+param.sigma = 2
 param.gravity = -10
 param.n_xi = 3.
 
@@ -104,7 +104,7 @@ phi0 = np.zeros((param.ny+6, param.nx+6))
 
 # Droplets:
 radius = 0.1
-x_drop = 0.2
+x_drop = 0.1
 y_drop = 0.5
 shrpn = 100
 
@@ -126,9 +126,7 @@ phi = model.var.get('phi')
 vor[:, :] = 0.
 phi[:, :] = phi0
 
-x = np.arange(0, np.shape(tracer)[0], 1)
-X , Y = np.meshgrid(x,x)
- 
+
 
 # =============================================================================
 #  Set tracer
