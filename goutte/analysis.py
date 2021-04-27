@@ -37,23 +37,43 @@ def get_min_max_phi(phi_at_t, threshold, index_x):
     iterate = True
     j = len(phi_at_t[:,  index_x])-1
 
-    while iterate and j > 0:
-        # We iterate over j, until we have found the minimum and the maximum
-        # We should always find a value because we take the index of the center
-        # but the j > 0 avoids any crash
-        if max_done is False and phi_at_t[j, index_x] > threshold:
-            y_max = y[j]
-            max_done = True
+    if phi_at_t[0,0] > threshold:  # In this case we have a bubble
 
-        # f max_done:
-            # rint(phi_at_t[j, i])
+        while iterate and j > 0:
+            # We iterate over j, until we have found the minimum and the maximum
+            # We should always find a value because we take the index of the center
+            # but the j > 0 avoids any crash
+            if max_done is False and phi_at_t[j, index_x] < threshold:
+                y_max = y[j]
+                max_done = True
 
-        if max_done and phi_at_t[j, index_x] < threshold:
+            # f max_done:
+                # rint(phi_at_t[j, i])
 
-            y_min = y[j+1]
-            iterate = False
-        j -= 1
+            if max_done and phi_at_t[j, index_x] > threshold:
 
+                y_min = y[j+1]
+                iterate = False
+            j -= 1
+
+    else:  # In this case we have a droplet
+
+        while iterate and j > 0:
+            # We iterate over j, until we have found the minimum and the maximum
+            # We should always find a value because we take the index of the center
+            # but the j > 0 avoids any crash
+            if max_done is False and phi_at_t[j, index_x] > threshold:
+                y_max = y[j]
+                max_done = True
+
+            # f max_done:
+                # rint(phi_at_t[j, i])
+
+            if max_done and phi_at_t[j, index_x] < threshold:
+
+                y_min = y[j+1]
+                iterate = False
+            j -= 1
     return y_min, y_max
 
 
@@ -149,6 +169,9 @@ list_y_min = []
 for i in range(1, len(t)):
     print(i, "/", len(t))  # Can be used to show progress
     x_i, y_i = get_center(phi[i, :, :].T, 0.8)
+    if y_i > 1.75:
+        break
+    print(y_i)
     # .T should be removed in case of a change in the direction of g in the experiment
     v_x.append((-x_i + prev_x) / (t[i] - t[i-1]))
     # get speed by the difference of position / difference in time
