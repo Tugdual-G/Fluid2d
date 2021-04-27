@@ -135,18 +135,20 @@ v_y = np.load(home + path + '/' + fold + '/' + fold + 'velocity_y.npy')
 v_x = average(v_x, 40)
 v_y = average(v_y, 40)
 
+t = t[0:len(v_x)]
+
 
 ellipticity = np.load(home + path + '/' + fold + '/' + fold + 'ellipticity.npy')
 ellipticity = average(ellipticity, 10)
 fig, ax = plt.subplots(2, 1, num='speed', sharex=True, clear=True)
 
-ax[0].plot(t, v_x, 'b', linewidth=0.5, label="$V_x$")
+# ax[0].plot(t, v_x, 'b', linewidth=0.5, label="$V_x$")
 ax[0].plot(t, v_y, 'k', linewidth=0.5, label="$V_y$")
-ax[0].set_title("Vitesse de la bulle", loc='left')
-ax[0].set_ylabel("V")
+ax[0].set_title(r"Vitesse de la bulle", loc='left')
+ax[0].set_ylabel(r"V \(\left( \sqrt{Rg} \right)\) ")
 # ax[0].set_xlabel("t")
 ax[0].grid()
-ax[0].legend()
+# ax[0].legend()
 # plt.show()
 
 # plt.figure("oscillation")
@@ -154,7 +156,7 @@ ax[0].legend()
 ax[1].plot(t, ellipticity, 'k', linewidth=0.5)
 ax[1].grid()
 ax[1].set_ylabel(r"\(\varepsilon\)")
-ax[1].set_xlabel("t")
+ax[1].set_xlabel(r"t \(\left( \sqrt{\frac{R}{g}} \right)\)")
 ax[1].set_title("Ellipticité", loc='left', pad=5)
 
 plt.show()
@@ -170,10 +172,11 @@ i = 0
 t_step = len(t)//nmbr
 for i in range(nmbr):
     pcm = ax[i].pcolormesh(X, Y, np.flipud(phi[t_step*i, :, :].T), cmap='inferno', shading='gouraud')
-    titre = "t="+str(round(t[t_step*i], 3))+" s"
+    titre = "t="+str(round(t[t_step*i], 3))
     ax[i].set_title(titre)
     ax[i].axis('equal')
-ax[2].set_xlabel('x')
-ax[0].set_ylabel('y')
-# fig.colorbar(pcm, ax=ax[-1], label='Densité de tracer', )
+ax[2].set_xlabel('x(R)')
+ax[0].set_ylabel('y(R)')
+fig.colorbar(pcm, ax=ax[-1], label=r'\(\phi\)', )
+plt.show()
 fig1.savefig(home + path + '/' + fold + '/' + 'snapshot.pdf', dpi=300)
