@@ -9,11 +9,11 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'nu-2_q8'
+param.expname = 'q9_alph_4'
 
 # domain and resolution
 ratio = 2
-param.ny = 2**8
+param.ny = 2**9
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -40,7 +40,7 @@ param.freq_his = .002
 param.freq_diag = .1
 
 # plot
-param.plot_interactive = True
+param.plot_interactive = False
 param.plot_var = 'tracer'
 param.cax = [0., 1.]
 param.colorscheme = 'imposed'
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 2
+param.sigma = 1.
 param.gravity = -10
 param.n_xi = 3.
 

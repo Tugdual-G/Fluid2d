@@ -60,7 +60,7 @@ def get_min_max_phi(phi_at_t, threshold, index_x):
 home = os.environ['HOME']
 
 # path = "/data/fluid2d/bien"
-path = "/data/fluid2d"
+path = "/data/fluid2d/bien"
 print(os.listdir(home + path))# The name of the dirs are the name of the experiments
 
 tries = 0
@@ -144,7 +144,7 @@ for i in range(1, len(t)):
     # .T should be removed in case of a change in the direction of g in the experiment
     v_x.append((-x_i + prev_x) / (t[i] - t[i-1]))
     # get speed by the difference of position / difference in time
-    v_y.append((-y_i + prev_y) / (t[i] - t[i-1]))
+    v_y.append((-y_i + prev_y) / (t[i] - t[i-1]))  # Transpose inverse the y axis
     v.append((np.sqrt((-x_i + prev_x)**2 + (-y_i + prev_y)**2)) / (t[i] - t[i-1]))
     prev_x = x_i
     prev_y = y_i
