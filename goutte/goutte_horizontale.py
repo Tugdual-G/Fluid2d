@@ -9,11 +9,11 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'q9_alph_4'
+param.expname = 'q7_alph2_R1'
 
 # domain and resolution
 ratio = 2
-param.ny = 2**9
+param.ny = 2**7
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -22,7 +22,7 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 1.5
+param.tend = 0.9
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 1.
+param.sigma = 2
 param.gravity = -10
 param.n_xi = 3.
 

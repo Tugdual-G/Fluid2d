@@ -207,7 +207,7 @@ def restrict_phi(phi):
 
 
 @jit(nopython=True, parallel=True, cache=True)
-def smooth_start(dxdt, t, w, dx, nu_l=10**-4, sigma = 0.1):
+def smooth_start(dxdt, t, w, dx, nu_l=10**-3, sigma = 0.1):
     """ In order to reduce oscillations at the begining of the simulation """
     #dxdt += laplacian(w, dx)*nu_l*np.exp(-(t/sigma)**2)
     dxdt += laplacian(w, dx)*nu_l
