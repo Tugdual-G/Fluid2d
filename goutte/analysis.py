@@ -127,9 +127,9 @@ indices_x = np.argwhere((x > x_center - dx) * (x < x_center + dx))
 indices_y = np.argwhere((y > y_center - dy) * (y < y_center + dy))
 
 y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.8, indices_x[0][0])
-hauteur = y_max - y_min
+hauteur = abs(y_max - y_min)
 x_min, x_max = get_min_max_phi(phi[i, :, :], 0.8, indices_y[0][0])
-largeur = x_max - x_min
+largeur = abs(x_max - x_min)
 
 plt.figure('goutte', figsize=(5, 10))
 plt.clf()
@@ -184,9 +184,9 @@ for i in range(1, len(t)):
     indices_y = np.argwhere((y > y_i - dy) * (y < y_i + dy))
 
     y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.8, indices_x[0][0])
-    hauteur = y_max - y_min
+    hauteur = abs(y_max - y_min)
     x_min, x_max = get_min_max_phi(phi[i, :, :], 0.8, indices_y[0][0])
-    largeur = x_max - x_min
+    largeur = abs(x_max - x_min)
 
     if hauteur > largeur:
         a = hauteur
