@@ -9,11 +9,11 @@ import numpy as np
 param = Param('default.xml')
 param.modelname = 'droplet'
 #name = str(input('nom export:'))
-param.expname = 'q7_alph2_R1'
+param.expname = 'Visqueux_s1'
 
 # domain and resolution
-ratio = 2
-param.ny = 2**7
+ratio = 3
+param.ny = 2**8
 param.nx = param.ny*ratio
 param.Ly = 1.
 param.Lx = param.Ly*ratio
@@ -22,7 +22,7 @@ param.npy = 1
 param.geometry = 'closed'
 
 # time
-param.tend = 0.9
+param.tend = 1.5
 param.cfl = 1.5
 param.adaptable_dt = True
 param.dt = 0.001
@@ -40,7 +40,7 @@ param.freq_his = .002
 param.freq_diag = .1
 
 # plot
-param.plot_interactive = False
+param.plot_interactive = True
 param.plot_var = 'tracer'
 param.cax = [0., 1.]
 param.colorscheme = 'imposed'
@@ -57,7 +57,7 @@ param.forcing = False
 param.rho_h = 5
 param.rho_l = 1.
 param.M = 0.0
-param.sigma = 2
+param.sigma = 2.5
 param.gravity = -10
 param.n_xi = 3.
 
@@ -104,7 +104,7 @@ phi0 = np.zeros((param.ny+6, param.nx+6))
 
 # Droplets:
 radius = 0.1
-x_drop = 0.1
+x_drop = 0.15
 y_drop = 0.5
 shrpn = 100
 
@@ -132,7 +132,7 @@ phi[:, :] = phi0
 #  Set tracer
 # =============================================================================
 
-tracer[:,:] = 0.5*np.cos((grid.yr-0.5)*100)**3*np.cos((grid.yr-0.5)*3)**4
+tracer[:,:] = 0.5*np.cos((grid.yr-0.5)*100)**3*np.cos((grid.yr-0.5)*3)**4*(1+np.tanh((grid.xr-param.Lx*x_drop*2)*8))/2
 
 add_phi(tracer, param, grid, x_drop, y_drop, radius, sharpness=shrpn)
 

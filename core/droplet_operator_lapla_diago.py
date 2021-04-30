@@ -89,9 +89,6 @@ def laplacian_diago(x, dx):
             lplc_d[i, j] = (x[i-1, j-1] + x[i+1, j+1] + x[i+1, j-1] +
                           x[i-1, j+1]-4*x[i, j])/(2*dx**2)
     
-    #max_lplc = np.amax(np.abs(lplc[1:-1,1:-1]))
-    
-    #lplc[1:-1,1:-1] = lplc[1:-1,1:-1]*(1-np.abs(lplc[1:-1,1:-1])/max_lplc)+lplc_d[1:-1,1:-1]*np.abs(lplc[1:-1,1:-1])/max_lplc
     lplc[1:-1,1:-1] = lplc[1:-1,1:-1]*0.5+lplc_d[1:-1,1:-1]*0.5   
     # boundaries:
     #!!! Pas certain du calcul
@@ -207,7 +204,7 @@ def restrict_phi(phi):
 
 
 @jit(nopython=True, parallel=True, cache=True)
-def smooth_start(dxdt, t, w, dx, nu_l=10**-3, sigma = 0.1):
+def smooth_start(dxdt, t, w, dx, nu_l=10**-2, sigma = 0.1):
     """ In order to reduce oscillations at the begining of the simulation """
     #dxdt += laplacian(w, dx)*nu_l*np.exp(-(t/sigma)**2)
     dxdt += laplacian(w, dx)*nu_l

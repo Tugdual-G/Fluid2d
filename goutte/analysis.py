@@ -168,7 +168,7 @@ list_y_min = []
 # Computation of different speed
 for i in range(1, len(t)):
     print(i, "/", len(t))  # Can be used to show progress
-    x_i, y_i = get_center(phi[i, :, :].T, 0.8)
+    x_i, y_i = get_center(phi[i, :, :].T, 0.4)
     if y_i > 1.75:
         break
     print(y_i)
@@ -183,9 +183,9 @@ for i in range(1, len(t)):
     indices_x = np.argwhere((x > x_i - dx) * (x < x_i + dx))
     indices_y = np.argwhere((y > y_i - dy) * (y < y_i + dy))
 
-    y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.8, indices_x[0][0])
+    y_min, y_max = get_min_max_phi(phi[i, :, :].T, 0.4, indices_x[0][0])
     hauteur = abs(y_max - y_min)
-    x_min, x_max = get_min_max_phi(phi[i, :, :], 0.8, indices_y[0][0])
+    x_min, x_max = get_min_max_phi(phi[i, :, :], 0.4, indices_y[0][0])
     largeur = abs(x_max - x_min)
 
     if hauteur > largeur:
@@ -199,13 +199,13 @@ for i in range(1, len(t)):
     list_y_max += [y_max]
     list_y_min += [y_min]
 
-np.save(home + path + '/' + fold + '/' + fold + 'velocity.npy', v)
-np.save(home + path + '/' + fold + '/' + fold + 'velocity_x.npy', v_x)
-np.save(home + path + '/' + fold + '/' + fold + 'velocity_y.npy', v_y)
+#np.save(home + path + '/' + fold + '/' + fold + 'velocity.npy', v)
+#np.save(home + path + '/' + fold + '/' + fold + 'velocity_x.npy', v_x)
+#np.save(home + path + '/' + fold + '/' + fold + 'velocity_y.npy', v_y)
 
 np.save(home + path + '/' + fold + '/' + fold + 'ellipticity.npy', ellipticity)
-np.save(home + path + '/' + fold + '/' + fold + 'y_max.npy', list_y_max)
-np.save(home + path + '/' + fold + '/' + fold + 'y_min.npy', list_y_min)
+#np.save(home + path + '/' + fold + '/' + fold + 'y_max.npy', list_y_max)
+#np.save(home + path + '/' + fold + '/' + fold + 'y_min.npy', list_y_min)
 
 
 #%%
@@ -224,3 +224,4 @@ np.save(home + path + '/' + fold + '/' + fold + 'y_min.npy', list_y_min)
 # np.save(home + path + '/' + fold + '/' + fold + 'oscilations.npy', oscilation)
 # np.save(home + path + '/' + fold + '/' + fold + 'y_max.npy', list_y_max)
 # np.save(home + path + '/' + fold + '/' + fold + 'y_min.npy', list_y_min)
+
